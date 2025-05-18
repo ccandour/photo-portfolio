@@ -1,0 +1,1 @@
+export { loadAlbums } from './photos'; 
