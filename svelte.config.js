@@ -14,9 +14,6 @@ const config = {
 		adapter: adapter({
 			strict: false
 		}),
-		paths: {
-			base: '/photo-portfolio'
-		}
 	}
 };
 
