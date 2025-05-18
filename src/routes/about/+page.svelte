@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import SocialIcon from '$lib/components/SocialIcon.svelte';
 
   const links = [
@@ -66,10 +67,10 @@
 </script>
 
 <nav>
-  <a href="/">Home</a>
-  <a href="/gear">Gear</a>
-  <a href="/music">Music</a>
-  <a href="/about" class="active">About me</a>
+  <a href="{base}/">Home</a>
+  <a href="{base}/gear">Gear</a>
+  <a href="{base}/music">Music</a>
+  <a href="{base}/about" class="active">About me</a>
 </nav>
 
 <div class="wrapper">

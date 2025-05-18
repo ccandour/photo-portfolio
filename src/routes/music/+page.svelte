@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { onMount, onDestroy } from 'svelte';
   import { playerStore } from '$lib/stores/player';
   import type { DeezerTrack } from '$lib/types';
@@ -109,10 +110,10 @@
 </script>
 
 <nav>
-  <a href="/">Home</a>
-  <a href="/gear">Gear</a>
-  <a href="/music" class="active">Music</a>
-  <a href="/about">About me</a>
+  <a href="{base}/">Home</a>
+  <a href="{base}/gear">Gear</a>
+  <a href="{base}/music" class="active">Music</a>
+  <a href="{base}/about">About me</a>
 </nav>
 
 <div class="wrapper">

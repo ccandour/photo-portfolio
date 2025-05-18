@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import type { PageData } from './$types';
   export let data: PageData;
 
@@ -10,10 +11,10 @@
 </script>
 
 <nav>
-  <a href="/">Home</a>
-  <a href="/gear" class="active">Gear</a>
-  <a href="/music">Music</a>
-  <a href="/about">About me</a>
+  <a href="{base}/">Home</a>
+  <a href="{base}/gear" class="active">Gear</a>
+  <a href="{base}/music">Music</a>
+  <a href="{base}/about">About me</a>
 </nav>
 
 <div class="wrapper">

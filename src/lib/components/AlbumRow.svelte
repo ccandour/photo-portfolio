@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import type { Album } from '$lib/types';
   export let album: Album;
 </script>
@@ -14,7 +15,7 @@
   <div class="scroll-container">
     <div class="photo-scroll">
       {#each album.photos as photo}
-        <a href="/photo/{photo.id}" class="photo-item">
+        <a href="{base}/photo/{photo.id}" class="photo-item">
           <div class="photo-wrapper">
             <img src={photo.src} alt={photo.title} loading="lazy" />
           </div>

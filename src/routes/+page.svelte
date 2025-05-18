@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import AlbumRow from '$lib/components/AlbumRow.svelte';
   import type { PageData } from './$types';
 
@@ -6,10 +7,10 @@
 </script>
 
 <nav>
-  <a href="/" class="active">Home</a>
-  <a href="/gear">Gear</a>
-  <a href="/music">Music</a>
-  <a href="/about">About me</a>
+  <a href="{base}/" class="active">Home</a>
+  <a href="{base}/gear">Gear</a>
+  <a href="{base}/music">Music</a>
+  <a href="{base}/about">About me</a>
 </nav>
 
 <div class="wrapper">
