@@ -8,4 +8,4 @@ services:
       - "3000:3000"
     restart: unless-stopped
     volumes:
-      - ./static/photos:/app/build/static/photos
+      - ./static/photos:/app/static/photos
