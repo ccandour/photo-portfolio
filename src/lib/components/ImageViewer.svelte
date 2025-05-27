@@ -274,11 +274,8 @@
       </div>
 
       {#if isMobile && !showMetadata}
-        <div class="swipe-hint">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
-            <path d="M12 19V5M5 12l7-7 7 7"/>
-          </svg>
-          <span>Swipe up for info</span>
+        <div class="tap-hint">
+          <span>Tap for more info</span>
         </div>
       {/if}
     </div>
@@ -657,20 +654,11 @@
       right: 1rem;
     }
     
-    /* Make swipe hint sticky to bottom */
-    .swipe-hint {
-      position: fixed; /* Change from absolute to fixed */
-      bottom: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.75rem;
-      animation: fadeInOut 3s ease-in-out infinite;
-      z-index: 11; /* Ensure it's above other elements */
+    /* Make tap hint sticky to bottom */
+    .tap-hint {
+      bottom: calc(env(safe-area-inset-bottom) + 1.5rem); /* Add extra space above safe area */
+      font-size: 0.7rem;
+      padding: 0.4rem 0.8rem;
     }
   }
 
@@ -687,35 +675,33 @@
       height: 24px;
     }
     
-    /* Adjust swipe hint for smaller screens */
-    .swipe-hint {
-      bottom: 0.75rem;
-      font-size: 0.7rem;
+    /* Adjust tap hint for smaller screens */
+    .tap-hint {
+      bottom: calc(env(safe-area-inset-bottom) + 1.25rem);
+      font-size: 0.65rem;
+      padding: 0.35rem 0.7rem;
     }
   }
 
-  /* Keep desktop styles unchanged */
-  .swipe-hint {
-    position: absolute;
-    bottom: 1rem;
+  .tap-hint {
+    position: fixed;
+    bottom: env(safe-area-inset-bottom, 1rem); /* Respect safe area */
+    bottom: max(env(safe-area-inset-bottom), 1rem); /* Use whichever is larger */
     left: 50%;
     transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    color: rgba(255, 255, 255, 0.6);
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.5);
     font-size: 0.75rem;
-    animation: fadeInOut 3s ease-in-out infinite;
+    text-align: center;
+    animation: subtleFade 4s ease-in-out infinite;
+    z-index: 11;
+    pointer-events: none;
   }
 
-  .swipe-hint svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  @keyframes fadeInOut {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.8; }
+  @keyframes subtleFade {
+    0%, 20%, 80%, 100% { opacity: 0.2; }
+    40%, 60% { opacity: 0.6; }
   }
 </style>

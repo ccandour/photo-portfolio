@@ -432,7 +432,7 @@
     }
     
     .album-art {
-      width: 60px; /* Even smaller on very small screens */
+      width: 60px;
       height: 60px;
     }
     
