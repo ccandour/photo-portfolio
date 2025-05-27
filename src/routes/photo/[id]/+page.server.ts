@@ -1,35 +1,43 @@
-import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
 import { loadAlbums } from '$lib/server';
 
 export const load: PageServerLoad = async ({ params }) => {
   const albums = await loadAlbums();
-  let photo;
-  let prevId = null;
-  let nextId = null;
-
-  // Find the photo and its adjacent photos
-  for (const album of albums) {
-    const photoIndex = album.photos.findIndex(p => p.id === params.id);
-    if (photoIndex !== -1) {
-      photo = album.photos[photoIndex];
-      if (photoIndex > 0) {
-        prevId = album.photos[photoIndex - 1].id;
-      }
-      if (photoIndex < album.photos.length - 1) {
-        nextId = album.photos[photoIndex + 1].id;
-      }
+  const photoId = params.id;
+  
+  // Find the album containing this photo
+  let album = null;
+  let photo = null;
+  let photoIndex = -1;
+  
+  for (const currentAlbum of albums) {
+    const foundIndex = currentAlbum.photos.findIndex(p => p.id === photoId);
+    if (foundIndex !== -1) {
+      album = currentAlbum;
+      photo = currentAlbum.photos[foundIndex];
+      photoIndex = foundIndex;
       break;
     }
   }
-
-  if (!photo) {
+  
+  if (!photo || !album) {
     throw error(404, 'Photo not found');
   }
-
+  
+  // Construct album ID the same way as in your album route
+  const albumId = `${album.metadata.location.toLowerCase()}@${album.metadata.date.replaceAll('.', '-').toLowerCase()}`;
+  
+  const prevId = photoIndex > 0 ? album.photos[photoIndex - 1].id : null;
+  const nextId = photoIndex < album.photos.length - 1 ? album.photos[photoIndex + 1].id : null;
+  
   return {
     photo,
+    album: {
+      ...album,
+      id: albumId // Add the constructed ID to the album
+    },
     prevId,
     nextId
   };
-}; 
+};

@@ -1,11 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
   import type { Photo } from '$lib/types';
   
   export let photo: Photo;
   export let prevId: string | null = null;
   export let nextId: string | null = null;
+  export let albumId: string | null = null;
+  export let returnUrl: string = '/'; // Add explicit return URL prop
 
   let imageElement: HTMLImageElement;
   let showDownloadMenu = false;
@@ -21,6 +24,11 @@
   ];
 
   onMount(() => {
+    // If no explicit returnUrl was provided, use the albumId as fallback
+    if (returnUrl === '/' && albumId) {
+      returnUrl = `/album/${albumId}`;
+    }
+
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (!target.closest('.download-menu-container')) {
@@ -43,11 +51,9 @@
     if (noiseCanvas) {
       const ctx = noiseCanvas.getContext('2d');
       if (ctx) {
-        // Set canvas size to higher resolution
         noiseCanvas.width = 1024;
         noiseCanvas.height = 1024;
         
-        // Create noise texture
         const imageData = ctx.createImageData(noiseCanvas.width, noiseCanvas.height);
         const data = imageData.data;
         
@@ -78,16 +84,15 @@
       if (showDownloadMenu) {
         showDownloadMenu = false;
       } else {
-        goto('/');
+        goto(returnUrl);
       }
     } else if (event.key === 'i' || event.key === 'I') {
-      // Toggle metadata with 'i' key
       showMetadata = !showMetadata;
     }
   }
 
   function handleClose() {
-    goto('/');
+    goto(returnUrl);
   }
 
   function toggleMetadata() {
