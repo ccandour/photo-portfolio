@@ -152,8 +152,9 @@
     right: 0;
     display: flex;
     justify-content: center;
+    align-items: center; /* Add vertical centering */
     gap: 2rem;
-    padding: 1.5rem;
+    padding: 1rem; /* Reduced padding that's more balanced */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 100;
@@ -165,6 +166,7 @@
     font-size: 1rem;
     opacity: 0.7;
     transition: opacity 0.2s ease;
+    padding: 0.5rem; /* Add padding to increase tap target size */
   }
 
   nav a:hover {
@@ -174,4 +176,37 @@
   nav a.active {
     opacity: 1;
   }
-</style> 
+
+  @media (max-width: 768px) {
+    .wrapper {
+      padding: 0 1.5rem;
+    }
+
+    main {
+      margin-top: 5rem;
+      padding: 1.5rem 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .wrapper {
+      padding: 0 1rem;
+    }
+
+    main {
+      margin-top: 4rem;
+      padding: 1rem 0;
+    }
+
+    /* Navbar mobile styles */
+    nav {
+      gap: 0.5rem; /* Reduce gap on small screens */
+      padding: 0.75rem 0.5rem; /* Less padding on mobile */
+    }
+    
+    nav a {
+      font-size: 0.9rem; /* Slightly smaller text */
+      padding: 0.5rem 0.25rem; /* Adjust padding on links */
+    }
+  }
+</style>
