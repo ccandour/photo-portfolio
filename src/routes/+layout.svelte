@@ -1,5 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { page } from '$app/stores';
+
+  $: isPhotoViewerPage = $page.url.pathname.startsWith('/photo/');
   
   let noiseCanvas: HTMLCanvasElement;
   
@@ -34,6 +37,16 @@
     <div class="gradient"></div>
     <canvas bind:this={noiseCanvas} class="noise"></canvas>
   </div>
+  
+  {#if !isPhotoViewerPage}
+  <nav>
+    <a href="/" class={$page.url.pathname === '/' ? 'active' : ''}>Home</a>
+    <a href="/gear" class={$page.url.pathname === '/gear' ? 'active' : ''}>Gear</a>
+    <a href="/music" class={$page.url.pathname === '/music' ? 'active' : ''}>Music</a>
+    <a href="/about" class={$page.url.pathname === '/about' ? 'active' : ''}>About me</a>
+  </nav>
+  {/if}
+  
   <div class="content">
     <slot></slot>
   </div>
@@ -144,4 +157,17 @@
     opacity: 1;
     background: rgba(255, 255, 255, 0.1);
   }
-</style> 
+
+  /* Media queries for responsive navbar */
+  @media (max-width: 480px) {
+    nav {
+      gap: 0.5rem;
+      padding: 0.75rem 0.5rem;
+    }
+    
+    nav a {
+      font-size: 1rem;
+      padding: 0.5rem 0.3rem;
+    }
+  }
+</style>
