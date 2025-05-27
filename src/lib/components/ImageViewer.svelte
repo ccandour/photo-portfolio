@@ -8,9 +8,10 @@
   export let nextId: string | null = null;
 
   let imageElement: HTMLImageElement;
-  let imageContainer: HTMLDivElement;
   let showDownloadMenu = false;
   let noiseCanvas: HTMLCanvasElement;
+  let showMetadata = false;
+  let isMobile = false;
 
   const downloadSizes = [
     { label: 'Small (1024px)', width: 1024 },
@@ -19,19 +20,7 @@
     { label: 'Original', width: null }
   ];
 
-  function updateInfoBarWidth() {
-    if (imageElement && imageContainer) {
-      const width = imageElement.offsetWidth;
-      imageContainer.style.setProperty('--image-width', `${width}px`);
-    }
-  }
-
   onMount(() => {
-    const observer = new ResizeObserver(updateInfoBarWidth);
-    if (imageElement) {
-      observer.observe(imageElement);
-    }
-
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (!target.closest('.download-menu-container')) {
@@ -40,34 +29,43 @@
     };
 
     document.addEventListener('click', handleClickOutside);
+    
+    // Check if device is mobile
+    isMobile = window.innerWidth <= 768;
+    
+    const handleResize = () => {
+      isMobile = window.innerWidth <= 768;
+    };
+    
+    window.addEventListener('resize', handleResize);
 
     // Initialize noise canvas
-    if (!noiseCanvas) return;
-    
-    const ctx = noiseCanvas.getContext('2d');
-    if (!ctx) return;
-    
-    // Set canvas size to higher resolution
-    noiseCanvas.width = 1024;
-    noiseCanvas.height = 1024;
-    
-    // Create noise texture
-    const imageData = ctx.createImageData(noiseCanvas.width, noiseCanvas.height);
-    const data = imageData.data;
-    
-    for (let i = 0; i < data.length; i += 4) {
-      const value = Math.random() * 255 * 0.15; // Increase intensity to 15%
-      data[i] = value;     // r
-      data[i + 1] = value; // g
-      data[i + 2] = value; // b
-      data[i + 3] = 255;   // alpha
+    if (noiseCanvas) {
+      const ctx = noiseCanvas.getContext('2d');
+      if (ctx) {
+        // Set canvas size to higher resolution
+        noiseCanvas.width = 1024;
+        noiseCanvas.height = 1024;
+        
+        // Create noise texture
+        const imageData = ctx.createImageData(noiseCanvas.width, noiseCanvas.height);
+        const data = imageData.data;
+        
+        for (let i = 0; i < data.length; i += 4) {
+          const value = Math.random() * 255 * 0.15;
+          data[i] = value;
+          data[i + 1] = value;
+          data[i + 2] = value;
+          data[i + 3] = 255;
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+      }
     }
-    
-    ctx.putImageData(imageData, 0, 0);
 
     return () => {
-      observer.disconnect();
       document.removeEventListener('click', handleClickOutside);
+      window.removeEventListener('resize', handleResize);
     };
   });
 
@@ -82,11 +80,20 @@
       } else {
         goto('/');
       }
+    } else if (event.key === 'i' || event.key === 'I') {
+      // Toggle metadata with 'i' key
+      showMetadata = !showMetadata;
     }
   }
 
   function handleClose() {
     goto('/');
+  }
+
+  function toggleMetadata() {
+    if (isMobile) {
+      showMetadata = !showMetadata;
+    }
   }
 
   async function downloadImage(width: number | null) {
@@ -151,9 +158,18 @@
     event.stopPropagation();
     showDownloadMenu = !showDownloadMenu;
   }
+
+  function handleMouseMove(event: MouseEvent) {
+    // Only show metadata when mouse is in bottom 15% of the screen
+    if (!isMobile) {
+      const windowHeight = window.innerHeight;
+      const bottomThreshold = windowHeight * 0.85; // Bottom 15% of screen
+      showMetadata = event.clientY > bottomThreshold;
+    }
+  }
 </script>
 
-<svelte:window on:keydown={handleKeydown}/>
+<svelte:window on:keydown={handleKeydown} on:mousemove={handleMouseMove}/>
 
 <div class="viewer">
   <button class="close-button" on:click={handleClose} aria-label="Close viewer">
@@ -168,61 +184,44 @@
   </div>
 
   <div class="content">
-    <div class="image-container" bind:this={imageContainer}>
-      <div class="image-wrapper">
-        <img 
-          src={photo.src} 
-          alt={photo.title} 
-          bind:this={imageElement}
-          on:load={updateInfoBarWidth}
-        />
-        
-        <div class="navigation">
-          {#if prevId}
-            <button class="nav-button prev" on:click={() => goto(`/photo/${prevId}`)} aria-label="Previous photo">
-              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
-                <path d="M15 18l-6-6 6-6"/>
-              </svg>
-            </button>
-          {/if}
-
-          {#if nextId}
-            <button class="nav-button next" on:click={() => goto(`/photo/${nextId}`)} aria-label="Next photo">
-              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
-                <path d="M9 18l6-6-6-6"/>
-              </svg>
-            </button>
-          {/if}
-        </div>
-      </div>
-
-      <div class="info-bar">
+    <div 
+      class="photo-container" 
+      class:show-metadata={showMetadata}
+      on:click={toggleMetadata}
+    >
+      <img 
+        src={photo.src} 
+        alt={photo.title}
+        bind:this={imageElement}
+      />
+      
+      <div class="info-overlay">
         <div class="metadata">
           <div class="meta-rows">
-              <div class="meta-item">
-                <span class="label">Camera:</span>
-                <span class="value">{photo.metadata.camera}</span>
-              </div>
-              <div class="meta-item">
-                <span class="label">Lens:</span>
-                <span class="value">{photo.metadata.lens}</span>
-              </div>
-              <div class="meta-item">
-                <span class="label">FL:</span>
-                <span class="value">{photo.metadata.focalLength}</span>
-              </div>
-              <div class="meta-item">
-                <span class="label">Aperture:</span>
-                <span class="value">{photo.metadata.aperture}</span>
-              </div>
-              <div class="meta-item">
-                <span class="label">ISO:</span>
-                <span class="value">{photo.metadata.iso}</span>
-              </div>
-              <div class="meta-item">
-                <span class="label">SS:</span>
-                <span class="value">{photo.metadata.shutterSpeed}s</span>
-              </div>
+            <div class="meta-item">
+              <span class="label">Camera:</span>
+              <span class="value">{photo.metadata.camera}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Lens:</span>
+              <span class="value">{photo.metadata.lens}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">FL:</span>
+              <span class="value">{photo.metadata.focalLength}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Aperture:</span>
+              <span class="value">{photo.metadata.aperture}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">ISO:</span>
+              <span class="value">{photo.metadata.iso}</span>
+            </div>
+            <div class="meta-item">
+              <span class="label">SS:</span>
+              <span class="value">{photo.metadata.shutterSpeed}s</span>
+            </div>
           </div>
         </div>
 
@@ -249,6 +248,33 @@
           {/if}
         </div>
       </div>
+      
+      <div class="navigation">
+        {#if prevId}
+          <button class="nav-button prev" on:click|stopPropagation={() => goto(`/photo/${prevId}`)} aria-label="Previous photo">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
+              <path d="M15 18l-6-6 6-6"/>
+            </svg>
+          </button>
+        {/if}
+
+        {#if nextId}
+          <button class="nav-button next" on:click|stopPropagation={() => goto(`/photo/${nextId}`)} aria-label="Next photo">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        {/if}
+      </div>
+
+      {#if isMobile}
+        <div class="swipe-hint">
+          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
+            <path d="M12 19V5M5 12l7-7 7 7"/>
+          </svg>
+          <span>Swipe up for info</span>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
@@ -260,100 +286,115 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    background: radial-gradient(circle at 0% 0%, #ffffff 0%, transparent 50%),
-                radial-gradient(circle at 100% 0%, #888888 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, #333333 0%, transparent 50%),
-                radial-gradient(circle at 0% 100%, #666666 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, #222222 0%, #000000 100%);
-    background-size: 200% 200%;
-    animation: gradient 60s ease infinite;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0;
     padding: 0;
-  }
-
-  @keyframes gradient {
-    0% {
-      background-position: 0% 0%;
-    }
-    25% {
-      background-position: 100% 0%;
-    }
-    50% {
-      background-position: 100% 100%;
-    }
-    75% {
-      background-position: 0% 100%;
-    }
-    100% {
-      background-position: 0% 0%;
-    }
+    z-index: 1000;
   }
 
   .content {
+    position: relative;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: 100vh;
     width: 100%;
-    padding: 5rem 2rem;
+    padding: 0;
     box-sizing: border-box;
+    overflow: hidden;
   }
 
-  .image-container {
-    flex: 1;
+  .photo-container {
     position: relative;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    height: 100%;
     width: 100%;
-    min-height: 0;
-  }
-
-  .image-wrapper {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: calc(100% - 240px);
-    max-width: 100%;
-    max-height: calc(100vh - 240px);
-    box-sizing: border-box;
+    overflow: hidden;
   }
 
   img {
     max-width: 100%;
-    max-height: calc(100vh - 300px);
+    max-height: 100vh;
     width: auto;
     height: auto;
     object-fit: contain;
-    margin: 0;
-    padding: 0;
-    display: block;
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
   }
 
-  .navigation {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 2rem;
-    right: 2rem;
+  .info-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
+    box-sizing: border-box;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 10;
+  }
+
+  .photo-container.show-metadata .info-overlay {
+    transform: translateY(0);
+  }
+
+  .metadata {
+    flex: 1;
+  }
+
+  .meta-rows {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem; /* Increased gap for better separation between vertically stacked items */
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column; /* Stack label above value on desktop too */
+    align-items: flex-start;
+    gap: 0.2rem;
+    white-space: nowrap;
+  }
+
+  .label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem; /* Slightly smaller font for labels */
+  }
+
+  .value {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem; /* Consistent font size for values */
+  }
+
+  .navigation {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 1rem;
+    right: 1rem;
+    display: flex;
+    justify-content: space-between;
     pointer-events: none;
+    z-index: 5;
   }
 
   .nav-button {
     width: 48px;
     height: 48px;
-    background: rgba(26, 26, 26, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     color: white;
     cursor: pointer;
@@ -362,299 +403,27 @@
     justify-content: center;
     transition: all 0.2s ease;
     pointer-events: auto;
-    padding: 0;
-    margin: 0;
-  }
-
-  .nav-button.prev {
-    margin-right: auto;
-  }
-
-  .nav-button.next {
-    margin-left: auto;
   }
 
   .nav-button:hover {
-    background: rgba(26, 26, 26, 0.5);
-    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.6);
   }
 
   .nav-button svg {
     width: 24px;
     height: 24px;
-    stroke: currentColor;
-    stroke-width: 1.5;
-    fill: none;
-  }
-
-  .info-bar {
-    height: auto;
-    min-height: 100px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 2rem;
-    width: var(--image-width, auto);
-    max-width: calc(100% - 4rem);
-    min-width: min(100%, 600px);
-    padding: 1.5rem;
-    background: rgba(26, 26, 26, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
-    border-radius: 0 0 8px 8px;
-    box-sizing: border-box;
-  }
-
-  .metadata {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
-    flex: 1;
-    max-width: 800px;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .meta-rows {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    width: 100%;
-    min-width: min(100%, 500px);
-  }
-
-  .meta-item {
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-    white-space: nowrap;
-    min-width: fit-content;
-  }
-
-  .label {
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.9rem;
-  }
-
-  .value {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-  }
-
-  .action-button {
-    height: 100%;
-    background: rgba(26, 26, 26, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem;
-  }
-
-  .action-button:hover {
-    background: rgba(26, 26, 26, 0.5);
-    border-color: rgba(255, 255, 255, 0.7);
-  }
-
-  .action-button svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  .button-text {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
-  }
-
-  @media (max-width: 960px) {
-    .meta-rows {
-      grid-template-columns: repeat(2, minmax(140px, 1fr));
-    }
-  }
-
-  @media (max-width: 768px) {
-    .content {
-      padding: 4rem 1rem 1rem;
-      margin-top: 2rem;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .image-wrapper {
-      width: 100%;
-      max-height: calc(100vh - 200px);
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    img {
-      max-height: calc(100vh - 400px);
-    }
-
-    .navigation {
-      position: static;
-      transform: none;
-      left: auto;
-      right: auto;
-      padding: 0;
-      margin: 0;
-      gap: 0;
-      width: 100%;
-      justify-content: center;
-      display: flex;
-      flex-direction: row;
-    }
-
-    .nav-button {
-      width: 100%;
-      height: 64px;
-      background: rgba(26, 26, 26, 0.4);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 0.5px solid rgba(255, 255, 255, 0.5);
-      border-radius: 0;
-    }
-
-    .nav-button svg {
-      width: 28px;
-      height: 28px;
-    }
-
-    .info-bar {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 1.5rem;
-      padding: 1.2rem;
-      width: 100%;
-      max-width: 100%;
-      min-width: calc(100% - 2rem);
-      margin-bottom: 0;
-      border-radius: 0 0 8px 8px;
-      flex: 1;
-      min-height: auto;
-    }
-
-    .meta-rows {
-      min-width: 100%;
-    }
-
-    .download-menu-container {
-      width: 100%;
-      margin-top: auto;
-    }
-
-    .action-button {
-      width: 100%;
-      justify-content: center;
-    }
-
-    .metadata {
-      font-size: 1rem;
-    }
-
-    .label, .value {
-      font-size: 1rem;
-    }
-
-    .button-text {
-      font-size: 1rem;
-    }
-
-    .close-button {
-      top: 1rem !important;
-      right: 1rem !important;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .content {
-      padding: 3.5rem 0.5rem 0.5rem;
-    }
-
-    .image-wrapper {
-      width: calc(100% - 1rem);
-      gap: 0;
-    }
-
-    img {
-      max-height: calc(100vh - 350px);
-      margin-bottom: 0;
-    }
-
-    .info-bar {
-      padding: 1rem;
-    }
-
-    .meta-rows {
-      gap: 0.6rem;
-    }
-
-    .metadata {
-      font-size: 1.1rem;
-    }
-
-    .label, .value {
-      font-size: 1.1rem;
-    }
-
-    .button-text {
-      font-size: 1.1rem;
-    }
-
-    .close-button {
-      top: 0.5rem !important;
-      right: 0.5rem !important;
-      width: 44px;
-      height: 44px;
-    }
-
-    .close-button svg {
-      width: 20px;
-      height: 20px;
-    }
-  }
-
-  @media (max-height: 600px) {
-    .content {
-      padding: 3rem 1rem;
-    }
-
-    .image-wrapper {
-      max-height: calc(100vh - 180px);
-    }
-
-    .info-bar {
-      min-height: 80px;
-      padding: 1rem;
-    }
-
-    .meta-rows {
-      gap: 0.6rem;
-    }
-
-    .label, .value {
-      font-size: 0.75rem;
-    }
   }
 
   .close-button {
     position: fixed;
-    top: 2rem;
-    right: 2rem;
+    top: 1rem;
+    right: 1rem;
     width: 48px;
     height: 48px;
-    background: rgba(26, 26, 26, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     color: white;
     cursor: pointer;
@@ -662,13 +431,11 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    z-index: 10;
-    padding: 0;
+    z-index: 15;
   }
 
   .close-button:hover {
-    background: rgba(26, 26, 26, 0.5);
-    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.6);
   }
 
   .close-button svg {
@@ -678,7 +445,33 @@
 
   .download-menu-container {
     position: relative;
-    flex-shrink: 0;
+  }
+
+  .action-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .action-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .action-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .button-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
   }
 
   .download-menu {
@@ -686,11 +479,11 @@
     bottom: 100%;
     right: 0;
     margin-bottom: 0.5rem;
-    background: rgba(26, 26, 26, 0.4);
+    background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
     overflow: hidden;
     min-width: 160px;
   }
@@ -706,21 +499,14 @@
     text-align: left;
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap;
   }
 
   .download-option:hover {
-    background: rgba(26, 26, 26, 0.5);
+    background: rgba(255, 255, 255, 0.1);
   }
 
   .download-option:not(:last-child) {
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.2);
-  }
-
-  @media (max-width: 640px) {
-    .download-menu {
-      right: -1rem;
-    }
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
   }
 
   .background {
@@ -758,21 +544,159 @@
     pointer-events: none;
   }
 
+  .content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .content:hover::after {
+    opacity: 0.2;
+  }
+
   @keyframes gradient {
-    0% {
-      background-position: 0% 0%;
+    0% { background-position: 0% 0%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+    100% { background-position: 0% 0%; }
+  }
+
+  @media (max-width: 768px) {
+    .info-overlay {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 1rem;
     }
-    25% {
-      background-position: 100% 0%;
+    
+    .meta-rows {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* Two equal columns */
+      gap: 0.75rem 1rem; /* Row gap 0.75rem, column gap 1rem */
+      margin-bottom: 1rem;
+      width: 100%;
     }
-    50% {
-      background-position: 100% 100%;
+    
+    .meta-item {
+      /* For two-column layout, ensure these don't wrap */
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2rem;
     }
-    75% {
-      background-position: 0% 100%;
+    
+    .label {
+      font-size: 0.8rem;
     }
-    100% {
-      background-position: 0% 0%;
+    
+    .value {
+      font-size: 0.9rem;
+    }
+    
+    .download-menu-container {
+      width: 100%;
+    }
+    
+    .action-button {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .navigation {
+      top: 50%;
+      transform: translateY(-50%);
+      left: 0; /* Remove left padding */
+      right: 0; /* Remove right padding */
+      width: 100%;
+      padding: 0; /* Remove padding */
+    }
+    
+    .nav-button {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      margin: 0; /* Remove margin */
+      position: absolute; /* Position absolutely */
+    }
+    
+    .nav-button.prev {
+      left: 1rem; /* Position at edge with 1rem spacing like close button */
+    }
+    
+    .nav-button.next {
+      right: 1rem; /* Position at edge with 1rem spacing like close button */
+    }
+    
+    .info-button {
+      position: absolute;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 0.5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 11;
+    }
+    
+    .info-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .info-button svg {
+      width: 18px;
+      height: 18px;
     }
   }
-</style> 
+
+  @media (max-width: 480px) {
+    .close-button {
+      top: 1rem;
+      right: 1rem;
+      width: 48px;
+      height: 48px;
+    }
+    
+    .close-button svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .swipe-hint {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75rem;
+    animation: fadeInOut 3s ease-in-out infinite;
+  }
+
+  .swipe-hint svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  @keyframes fadeInOut {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+</style>
