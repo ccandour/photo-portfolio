@@ -97,7 +97,7 @@
   }
 
   main {
-    margin-top: 6rem;
+    margin-top: 4rem;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -184,8 +184,11 @@
     }
 
     main {
-      margin-top: 5rem;
       padding: 1.5rem 0;
+    }
+
+    h1 {
+      font-size: 1.8rem; /* Smaller font size for tablet */
     }
   }
 
@@ -195,7 +198,6 @@
     }
 
     main {
-      margin-top: 4rem;
       padding: 1rem 0;
     }
   }

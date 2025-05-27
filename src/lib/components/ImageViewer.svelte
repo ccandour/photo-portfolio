@@ -256,6 +256,9 @@
               <path d="M15 18l-6-6 6-6"/>
             </svg>
           </button>
+        {:else}
+          <!-- Empty placeholder to maintain layout -->
+          <div></div>
         {/if}
 
         {#if nextId}
@@ -264,10 +267,13 @@
               <path d="M9 18l6-6-6-6"/>
             </svg>
           </button>
+        {:else}
+          <!-- Empty placeholder to maintain layout -->
+          <div></div>
         {/if}
       </div>
 
-      {#if isMobile}
+      {#if isMobile && !showMetadata}
         <div class="swipe-hint">
           <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
             <path d="M12 19V5M5 12l7-7 7 7"/>
@@ -571,21 +577,37 @@
 
   @media (max-width: 768px) {
     .info-overlay {
+      position: fixed; /* Change from absolute to fixed */
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
       flex-direction: column;
       align-items: flex-start;
       padding: 1rem;
+      /* Remove transform since we want it always at bottom */
+      transform: translateY(0);
+      /* Show/hide with opacity instead */
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    .photo-container.show-metadata .info-overlay {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0); /* Keep at bottom */
     }
     
     .meta-rows {
       display: grid;
-      grid-template-columns: 1fr 1fr; /* Two equal columns */
-      gap: 0.75rem 1rem; /* Row gap 0.75rem, column gap 1rem */
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 1rem;
       margin-bottom: 1rem;
       width: 100%;
     }
     
     .meta-item {
-      /* For two-column layout, ensure these don't wrap */
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -613,52 +635,42 @@
     .navigation {
       top: 50%;
       transform: translateY(-50%);
-      left: 0; /* Remove left padding */
-      right: 0; /* Remove right padding */
+      left: 0;
+      right: 0;
       width: 100%;
-      padding: 0; /* Remove padding */
+      padding: 0;
     }
     
     .nav-button {
       width: 48px;
       height: 48px;
       border-radius: 8px;
-      margin: 0; /* Remove margin */
-      position: absolute; /* Position absolutely */
+      margin: 0;
+      position: absolute;
     }
     
     .nav-button.prev {
-      left: 1rem; /* Position at edge with 1rem spacing like close button */
+      left: 1rem;
     }
     
     .nav-button.next {
-      right: 1rem; /* Position at edge with 1rem spacing like close button */
+      right: 1rem;
     }
     
-    .info-button {
-      position: absolute;
-      bottom: 1.5rem;
-      right: 1.5rem;
+    /* Make swipe hint sticky to bottom */
+    .swipe-hint {
+      position: fixed; /* Change from absolute to fixed */
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: rgba(255, 255, 255, 0.1);
-      border: 0.5px solid rgba(255, 255, 255, 0.3);
-      border-radius: 4px;
-      color: white;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      z-index: 11;
-    }
-    
-    .info-button:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-    
-    .info-button svg {
-      width: 18px;
-      height: 18px;
+      gap: 0.25rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.75rem;
+      animation: fadeInOut 3s ease-in-out infinite;
+      z-index: 11; /* Ensure it's above other elements */
     }
   }
 
@@ -674,8 +686,15 @@
       width: 24px;
       height: 24px;
     }
+    
+    /* Adjust swipe hint for smaller screens */
+    .swipe-hint {
+      bottom: 0.75rem;
+      font-size: 0.7rem;
+    }
   }
 
+  /* Keep desktop styles unchanged */
   .swipe-hint {
     position: absolute;
     bottom: 1rem;

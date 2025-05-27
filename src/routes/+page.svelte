@@ -69,8 +69,10 @@
       padding: 0 1.5rem;
     }
 
-    main {
-      margin-top: 5rem;
+    h1 {
+      font-size: 1.3rem; /* Smaller font size for tablet */
+      padding: 1.5rem;
+      margin-bottom: 1rem;
     }
   }
 
@@ -81,6 +83,12 @@
 
     main {
       margin-top: 4rem;
+    }
+
+    h1 {
+      font-size: 1.1rem; /* Even smaller for mobile phones */
+      padding: 1rem;
+      line-height: 1.3; /* Slightly increase line height for better readability */
     }
   }
 </style>
