@@ -33,6 +33,7 @@ export interface GearItem {
   name: string;
   description: string;
   specs: string[];
+  url?: string;
   image?: string;
 }
 

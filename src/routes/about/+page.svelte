@@ -68,7 +68,7 @@
 <div class="wrapper">
   <main>
     <h1>About Me</h1>
-    <p class="intro">Hi! I'm Piotr, a street photographer capturing moments in urban environments. Here's where you can find me online:</p>
+    <p class="intro">Hi! I'm Piotr, an 18-year-old streetphotographer from Poland. You can also find me here:</p>
 
     <div class="links">
       {#each links as link}
@@ -188,7 +188,7 @@
     }
 
     h1 {
-      font-size: 1.8rem; /* Smaller font size for tablet */
+      font-size: 1.8rem;
     }
   }
 

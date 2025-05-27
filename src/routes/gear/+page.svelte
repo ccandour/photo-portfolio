@@ -12,7 +12,7 @@
 <div class="wrapper">
   <main>
     <h1>My Photography Gear</h1>
-    <p class="intro">Here's the equipment I use to capture my street photography. Each piece has been carefully chosen to suit my style and needs.</p>
+    <p class="intro">Here's the equipment I use to capture my street photography. Most of my images are therefore shot at 25 or 56mm, with the wider lens being by recent favorite.</p>
 
     {#each Object.entries(categories) as [type, title]}
       <section>
@@ -21,7 +21,13 @@
           {#each data.gear.filter(item => item.type === type) as item}
             <div class="gear-card">
               <div class="gear-content">
-                <h3>{item.name}</h3>
+                <h3>
+                  {#if item.url}
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">{item.name}</a>
+                  {:else}
+                    {item.name}
+                  {/if}
+                </h3>
                 <p class="description">{item.description}</p>
                 <ul class="specs">
                   {#each item.specs as spec}
@@ -112,6 +118,19 @@
     color: #fff;
   }
 
+  h3 a {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.3);
+    text-underline-offset: 3px;
+    transition: all 0.2s ease;
+  }
+
+  h3 a:hover {
+    text-decoration-color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.9);
+  }
+
   .description {
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 1.5rem;
@@ -144,11 +163,16 @@
     }
 
     main {
+      margin-top: 6rem;
       padding: 1.5rem 0;
     }
 
     h1 {
-      font-size: 1.8rem; /* Smaller font size for tablet */
+      font-size: 1.8rem;
+    }
+
+    .gear-grid {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -158,7 +182,16 @@
     }
 
     main {
+      margin-top: 5rem;
       padding: 1rem 0;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .gear-content {
+      padding: 1.5rem;
     }
   }
 </style>

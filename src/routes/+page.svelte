@@ -28,7 +28,7 @@
   }
 
   main {
-    margin-top: 6rem;
+    margin-top: 8rem; 
     padding: 0;
     position: relative;
     z-index: 1;
@@ -69,10 +69,21 @@
       padding: 0 1.5rem;
     }
 
+    main {
+      margin-top: 7rem;
+    }
+
     h1 {
-      font-size: 1.3rem; /* Smaller font size for tablet */
+      font-size: 1.3rem;
       padding: 1.5rem;
       margin-bottom: 1rem;
+      text-align: left;
+    }
+
+    .attribution {
+      text-align: right;
+      padding-right: 1.5rem;
+      margin-top: 0;
     }
   }
 
@@ -82,13 +93,23 @@
     }
 
     main {
-      margin-top: 4rem;
+      margin-top: 6rem;
     }
 
     h1 {
-      font-size: 1.1rem; /* Even smaller for mobile phones */
+      font-size: 1.1rem;
       padding: 1rem;
-      line-height: 1.3; /* Slightly increase line height for better readability */
+      line-height: 1.4; 
+      text-align: left; 
+      margin-bottom: 0.5rem;
+    }
+
+    .attribution {
+      text-align: right;
+      padding-right: 1rem;
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      margin-bottom: 2.5rem;
     }
   }
 </style>

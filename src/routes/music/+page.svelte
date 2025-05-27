@@ -18,12 +18,12 @@
     },
     {
       searchQuery: 'artist:"AERIAL LOVE FEED" track:"Raise Up"',
-      description: 'kinda rocks.',
+      description: 'this album is pretty nice i think.',
       mood: 'Atmospheric'
     },
     {
       searchQuery: 'artist:"Cocteau Twins" track:"Frou-Frou Foxes in Midsummer Fires"',
-      description: 'this album is a masterpiece, go listen.',
+      description: 'now this is a masterpiece, go listen.',
       mood: 'Dreamy'
     },
     {
@@ -38,7 +38,7 @@
     },
     {
       searchQuery: 'artist:"Alvvays" track:"Archie, Marry Me"',
-      description: 'Alvvays great.',
+      description: 'Alvvays is so peak ong.',
       mood: 'Upbeat'
     },
     {
@@ -48,7 +48,7 @@
     },
     {
       searchQuery: 'track:"Baby Baby" artist:"Going Steady"',
-      description: 'japanese punk rock anthem.',
+      description: 'j-punk anthem.',
       mood: 'Energetic'
     }
   ];
@@ -111,7 +111,7 @@
 <div class="wrapper">
   <main>
     <h1>Music Picks</h1>
-    <p class="intro">A collection of tracks from albums that inspire my work.</p>
+    <p class="intro">Some peak music, check it out.</p>
 
     <div class="recommendations">
       {#if loading}
@@ -358,36 +358,57 @@
     }
 
     main {
+      margin-top: 6rem;
       padding: 1.5rem 0;
     }
 
     h1 {
-      font-size: 1.8rem; /* Smaller font size for tablet */
+      font-size: 1.8rem;
     }
 
-    /* Add these new styles for better mobile layout */
     .track-main {
-      flex-direction: column;
+      flex-direction: row;
       gap: 1rem;
+      padding: 1rem;
     }
     
     .album-art {
-      width: 100%;
-      height: auto;
-      aspect-ratio: 1/1;
-      max-width: 200px;
-      margin: 0 auto;
-      margin-bottom: 1rem;
-      margin-top: 1rem;
+      width: 80px;
+      height: 80px;
+      flex-shrink: 0;
+    }
+    
+    .play-button {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .play-button svg {
+      width: 20px;
+      height: 20px;
     }
     
     .track-header {
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.25rem;
+      margin-bottom: 0.5rem;
     }
     
+    .track-title {
+      font-size: 1rem;
+    }
+    
+    .track-artist {
+      font-size: 0.85rem;
+    }
+    
+    .description,
     .duration {
-      align-self: flex-start;
+      display: none;
+    }
+    
+    .track-meta {
+      display: none;
     }
   }
 
@@ -397,16 +418,44 @@
     }
 
     main {
+      margin-top: 5rem;
       padding: 1rem 0;
+    }
+    
+    .recommendations {
+      gap: 1.5rem;
+    }
+
+    .track-main {
+      padding: 0.75rem;
+      gap: 0.75rem;
+    }
+    
+    .album-art {
+      width: 60px; /* Even smaller on very small screens */
+      height: 60px;
+    }
+    
+    .play-button {
+      width: 32px;
+      height: 32px;
+    }
+    
+    .play-button svg {
+      width: 16px;
+      height: 16px;
     }
 
     .track-title {
-      font-size: 1.1rem;
+      font-size: 0.9rem;
     }
 
-    .track-artist,
+    .track-artist {
+      font-size: 0.8rem;
+    }
+    
     .description {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
     }
   }
 </style>
