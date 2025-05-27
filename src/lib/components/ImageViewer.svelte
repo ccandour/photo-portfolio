@@ -8,13 +8,18 @@
   export let prevId: string | null = null;
   export let nextId: string | null = null;
   export let albumId: string | null = null;
-  export let returnUrl: string = '/'; // Add explicit return URL prop
+  export let returnUrl: string = '/';
+  export let albumName: string = '';
+  export let currentPhotoIndex: number = 1;
+  export let totalPhotos: number = 1;
 
   let imageElement: HTMLImageElement;
   let showDownloadMenu = false;
   let noiseCanvas: HTMLCanvasElement;
   let showMetadata = false;
   let isMobile = false;
+  let isHoveringTrigger = false;
+  let isHoveringDownloadMenu = false;
 
   const downloadSizes = [
     { label: 'Small (1024px)', width: 1024 },
@@ -22,6 +27,11 @@
     { label: 'Large (3072px)', width: 3072 },
     { label: 'Original', width: null }
   ];
+
+  // Function to extract filename from path
+  function getFileName(src: string): string {
+    return src.split('/').pop() || src;
+  }
 
   onMount(() => {
     // If no explicit returnUrl was provided, use the albumId as fallback
@@ -165,23 +175,141 @@
   }
 
   function handleMouseMove(event: MouseEvent) {
-    // Only show metadata when mouse is in bottom 15% of the screen
+    // Only show metadata when mouse is in bottom 15% of the screen OR hovering over download menu
     if (!isMobile) {
       const windowHeight = window.innerHeight;
       const bottomThreshold = windowHeight * 0.85; // Bottom 15% of screen
-      showMetadata = event.clientY > bottomThreshold;
+      
+      // Check if mouse is in bottom area OR we're hovering over download menu
+      const inBottomArea = event.clientY > bottomThreshold;
+      showMetadata = inBottomArea || isHoveringDownloadMenu;
     }
+  }
+
+  function handleDownloadMenuEnter() {
+    isHoveringDownloadMenu = true;
+    if (!isMobile) {
+      showMetadata = true;
+    }
+  }
+
+  function handleDownloadMenuLeave() {
+    isHoveringDownloadMenu = false;
+    // Let the normal mouse move handler determine if we should still show metadata
+  }
+
+  function handleTriggerMouseEnter() {
+    isHoveringTrigger = true;
+  }
+
+  function handleTriggerMouseLeave() {
+    isHoveringTrigger = false;
   }
 </script>
 
 <svelte:window on:keydown={handleKeydown} on:mousemove={handleMouseMove}/>
 
 <div class="viewer">
-  <button class="close-button" on:click={handleClose} aria-label="Close viewer">
+  <!-- Close button - only show on desktop -->
+  <button 
+    class="close-button desktop-only" 
+    class:hidden-on-hover={isHoveringTrigger} 
+    on:click={handleClose} 
+    aria-label="Close viewer"
+  >
     <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
       <path d="M18 6L6 18M6 6l12 12"/>
     </svg>
   </button>
+
+  <!-- Enhanced hover trigger area -->
+  <div 
+    class="top-hover-trigger"
+    on:mouseenter={handleTriggerMouseEnter}
+    on:mouseleave={handleTriggerMouseLeave}
+  >
+    <!-- Updated album info overlay with integrated close button -->
+    <div class="album-info-overlay">
+      <div class="photo-counter-minimal">{currentPhotoIndex}/{totalPhotos}</div>
+      
+      <div class="expanded-info">
+        <!-- Mobile layout -->
+        <div class="mobile-layout">
+          <!-- First row: filename/album on left, close button on right -->
+          <div class="mobile-top-row">
+            <div class="mobile-info-left">
+              <div class="filename-row">
+                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" class="file-icon">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14,2 14,8 20,8"/>
+                </svg>
+                <span class="filename">{getFileName(photo.src)}</span>
+              </div>
+              <div class="album-row">
+                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" class="album-icon">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="9" cy="9" r="2"/>
+                  <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                </svg>
+                <span class="album-name">{albumName}</span>
+              </div>
+            </div>
+            
+            <div class="mobile-close">
+              <button class="integrated-close-button" on:click={handleClose} aria-label="Close viewer">
+                <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Second row: full-width progress bar -->
+          <div class="mobile-progress-row">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {(currentPhotoIndex / totalPhotos) * 100}%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop layout (existing) -->
+        <div class="desktop-layout">
+          <div class="info-section left">
+            <div class="filename-row">
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" class="file-icon">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14,2 14,8 20,8"/>
+              </svg>
+              <span class="filename">{getFileName(photo.src)}</span>
+            </div>
+            <div class="album-row">
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" class="album-icon">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
+              <span class="album-name">{albumName}</span>
+            </div>
+          </div>
+          
+          <div class="info-section center">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {(currentPhotoIndex / totalPhotos) * 100}%"></div>
+            </div>
+            <div class="progress-text">{currentPhotoIndex} of {totalPhotos} photos</div>
+          </div>
+          
+          <div class="info-section right">
+            <button class="integrated-close-button" on:click={handleClose} aria-label="Close viewer">
+              <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="background">
     <div class="gradient"></div>
@@ -239,7 +367,12 @@
           </button>
 
           {#if showDownloadMenu}
-            <div class="download-menu" on:click|stopPropagation>
+            <div 
+              class="download-menu" 
+              on:click|stopPropagation
+              on:mouseenter={handleDownloadMenuEnter}
+              on:mouseleave={handleDownloadMenuLeave}
+            >
               {#each downloadSizes as size}
                 <button 
                   type="button"
@@ -362,12 +495,12 @@
   .meta-rows {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem; /* Increased gap for better separation between vertically stacked items */
+    gap: 1.5rem;
   }
 
   .meta-item {
     display: flex;
-    flex-direction: column; /* Stack label above value on desktop too */
+    flex-direction: column;
     align-items: flex-start;
     gap: 0.2rem;
     white-space: nowrap;
@@ -375,13 +508,13 @@
 
   .label {
     color: rgba(255, 255, 255, 0.6);
-    font-size: 0.8rem; /* Slightly smaller font for labels */
+    font-size: 0.8rem;
   }
 
   .value {
     color: rgba(255, 255, 255, 0.9);
     font-family: 'Space Mono', monospace;
-    font-size: 0.9rem; /* Consistent font size for values */
+    font-size: 0.9rem;
   }
 
   .navigation {
@@ -438,7 +571,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     z-index: 15;
   }
 
@@ -451,6 +584,27 @@
     height: 24px;
   }
 
+  .desktop-only {
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .desktop-only {
+      display: none !important;
+    }
+  }
+
+  .close-button.hidden-on-hover {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.8);
+    pointer-events: none;
+  }
+
+  .close-button {
+    transition: all 0.3s ease;
+  }
+
   .download-menu-container {
     position: relative;
   }
@@ -459,17 +613,23 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 0.5px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+    padding: 0.6rem 1.2rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
     color: white;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
   }
 
   .action-button:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
   .action-button svg {
@@ -479,42 +639,78 @@
 
   .button-text {
     font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
   }
 
   .download-menu {
     position: absolute;
     bottom: 100%;
     right: 0;
-    margin-bottom: 0.5rem;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 0.5px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+    margin-bottom: 0.75rem;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
     overflow: hidden;
-    min-width: 160px;
+    min-width: 180px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+    animation: menuSlideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    z-index: 20;
+  }
+
+  @keyframes menuSlideIn {
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
   .download-option {
     width: 100%;
-    padding: 0.8rem 1rem;
+    padding: 1rem 1.25rem;
     background: transparent;
     border: none;
     color: white;
     font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 400;
     text-align: left;
     cursor: pointer;
     transition: all 0.2s ease;
+    position: relative;
+    letter-spacing: 0.25px;
+    padding-left: 2.5rem;
   }
 
   .download-option:hover {
     background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 1);
+    padding-left: 2.75rem;
   }
 
   .download-option:not(:last-child) {
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .download-option::before {
+    content: '→';
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+
+  .download-option:hover::before {
+    opacity: 1;
+    left: 1.5rem;
   }
 
   .background {
@@ -577,121 +773,381 @@
     100% { background-position: 0% 0%; }
   }
 
+  /* Top info panel */
+  .top-hover-trigger {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 120px;
+    z-index: 12;
+    pointer-events: auto;
+  }
+
+  .top-hover-trigger:hover .photo-counter-minimal {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .top-hover-trigger:hover .expanded-info {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .album-info-overlay {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: white;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+
+  .photo-counter-minimal {
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+  }
+
+  .expanded-info {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 0 1rem;
+    margin-right: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+
+  .info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .info-section.left {
+    flex: 1;
+    align-items: flex-start;
+  }
+
+  .info-section.center {
+    flex: 1;
+    align-items: center;
+    max-width: 300px;
+  }
+
+  .info-section.right {
+    flex: 0 0 auto;
+    align-items: flex-end;
+  }
+
+  .integrated-close-button {
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    pointer-events: auto;
+  }
+
+  .integrated-close-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+
+  .integrated-close-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .filename-row, .album-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .file-icon, .album-icon {
+    width: 16px;
+    height: 16px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .filename {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.5px;
+  }
+
+  .album-name {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.9));
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  .progress-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-align: center;
+  }
+
   @media (max-width: 768px) {
-    .info-overlay {
-      position: fixed; /* Change from absolute to fixed */
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 1rem;
-      /* Remove transform since we want it always at bottom */
-      transform: translateY(0);
-      /* Show/hide with opacity instead */
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
+    .top-hover-trigger {
+      height: auto;
+      position: fixed;
+      pointer-events: none;
     }
-    
-    .photo-container.show-metadata .info-overlay {
+
+    .album-info-overlay {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      right: 0.75rem;
+      margin: 0;
+      pointer-events: auto;
+    }
+
+    .photo-counter-minimal {
+      display: none;
+    }
+
+    .expanded-info {
+      position: static;
       opacity: 1;
       visibility: visible;
-      transform: translateY(0); /* Keep at bottom */
+      transform: none;
+      pointer-events: auto;
+      margin-right: 0;
+      padding: 0.75rem 1rem;
+      height: auto;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 0.75rem;
     }
-    
-    .meta-rows {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem 1rem;
-      margin-bottom: 1rem;
-      width: 100%;
+
+    .mobile-layout {
+      display: flex;
     }
-    
-    .meta-item {
+
+    .desktop-layout {
+      display: none;
+    }
+
+    .mobile-progress-row .progress-bar {
+      height: 4px;
+      margin-bottom: 0;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-layout {
+      display: none;
+    }
+
+    .desktop-layout {
+      display: flex;
+      align-items: center;
       width: 100%;
+      position: relative;
+    }
+
+    .info-section.left {
+      flex: 0 0 auto;
+      align-items: flex-start;
+      min-width: 0;
+    }
+
+    .info-section.center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      gap: 0.2rem;
-    }
-    
-    .label {
-      font-size: 0.8rem;
-    }
-    
-    .value {
-      font-size: 0.9rem;
-    }
-    
-    .download-menu-container {
-      width: 100%;
-    }
-    
-    .action-button {
-      width: 100%;
+      align-items: center;
       justify-content: center;
     }
-    
-    .navigation {
-      top: 50%;
-      transform: translateY(-50%);
-      left: 0;
-      right: 0;
+
+    .info-section.right {
+      flex: 0 0 auto;
+      align-items: flex-end;
+      margin-left: auto;
+    }
+
+    .desktop-layout .info-section.center .progress-bar {
       width: 100%;
-      padding: 0;
+      margin-bottom: 0.5rem;
     }
-    
-    .nav-button {
-      width: 48px;
-      height: 48px;
-      border-radius: 8px;
-      margin: 0;
-      position: absolute;
-    }
-    
-    .nav-button.prev {
-      left: 1rem;
-    }
-    
-    .nav-button.next {
-      right: 1rem;
-    }
-    
-    /* Make tap hint sticky to bottom */
-    .tap-hint {
-      bottom: calc(env(safe-area-inset-bottom) + 1.5rem); /* Add extra space above safe area */
-      font-size: 0.7rem;
-      padding: 0.4rem 0.8rem;
+
+    .desktop-layout .info-section.center .progress-text {
+      text-align: center;
+      white-space: nowrap;
+      width: 100%;
     }
   }
 
   @media (max-width: 480px) {
-    .close-button {
-      top: 1rem;
-      right: 1rem;
-      width: 48px;
-      height: 48px;
+    .album-info-overlay {
+      top: 0.75rem;
+      left: 0.75rem;
+      right: 0.75rem;
     }
-    
-    .close-button svg {
-      width: 24px;
-      height: 24px;
+
+    .expanded-info {
+      margin-right: 0;
+      padding: 0.5rem;
+      gap: 0.5rem;
     }
-    
-    /* Adjust tap hint for smaller screens */
-    .tap-hint {
-      bottom: calc(env(safe-area-inset-bottom) + 1.25rem);
-      font-size: 0.65rem;
-      padding: 0.35rem 0.7rem;
+
+    .filename {
+      font-size: 0.75rem;
+    }
+
+    .album-name {
+      font-size: 0.7rem;
+    }
+
+    .integrated-close-button {
+      width: 40px;
+      height: 40px;
+    }
+
+    .integrated-close-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .mobile-progress-row .progress-bar {
+      height: 3px;
+    }
+  }
+
+  .mobile-layout {
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .mobile-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .mobile-info-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .mobile-close {
+    flex: 0 0 auto;
+  }
+
+  .mobile-progress-row {
+    width: 100%;
+  }
+
+  .desktop-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .mobile-layout {
+      display: flex;
+    }
+
+    .desktop-layout {
+      display: none;
+    }
+
+    .mobile-progress-row .progress-bar {
+      height: 4px;
+      margin-bottom: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .mobile-top-row {
+      gap: 0.5rem;
+    }
+
+    .mobile-info-left {
+      gap: 0.25rem;
+    }
+
+    .mobile-progress-row .progress-bar {
+      height: 3px;
     }
   }
 
   .tap-hint {
     position: fixed;
-    bottom: env(safe-area-inset-bottom, 1rem); /* Respect safe area */
-    bottom: max(env(safe-area-inset-bottom), 1rem); /* Use whichever is larger */
+    bottom: env(safe-area-inset-bottom, 1rem);
+    bottom: max(env(safe-area-inset-bottom), 1rem);
     left: 50%;
     transform: translateX(-50%);
     padding: 0.5rem 1rem;

@@ -10,6 +10,11 @@
   onMount(() => {
     mounted = true;
   });
+
+  // Function to extract filename from path
+  function getFileName(src: string): string {
+    return src.split('/').pop() || src;
+  }
 </script>
 
 <div class="wrapper">
@@ -42,7 +47,7 @@
         >
           <img src={photo.src} alt={photo.title} loading="lazy" />
           <div class="photo-overlay">
-            <div class="photo-title">{photo.title}</div>
+            <div class="photo-title">{getFileName(photo.src)}</div>
           </div>
         </div>
       {/each}
@@ -191,8 +196,10 @@
 
   .photo-title {
     color: white;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 400;
+    font-family: 'Space Mono', monospace; /* Use monospace for filenames */
+    letter-spacing: 0.5px;
   }
 
   @media (max-width: 768px) {
@@ -233,7 +240,7 @@
 
   @media (max-width: 480px) {
     .wrapper {
-      padding: 0 1rem;
+      padding: 1rem;
     }
 
     main {
@@ -260,7 +267,7 @@
     }
 
     .photo-title {
-      font-size: 0.8rem;
+      font-size: 0.7rem; /* Smaller on mobile */
     }
   }
 </style>
