@@ -16,17 +16,12 @@
     return src.split('/').pop() || src;
   }
 
-  // Helper function to generate URLs for different image sizes - ADD FORMAT PARAMETER
-  function getSizedImageUrl(originalUrl: string, width: number, format: 'webp' | 'jpg' = 'jpg'): string {
-    // Convert from /photos/... to /responsive/...
+  // Helper function to generate URLs for responsive images
+  function getSizedImageUrl(originalUrl: string, width: number, format: 'webp' | 'jpg'): string {
     const responsiveUrl = originalUrl.replace('/photos/', '/responsive/');
-    
-    // Extract path parts
     const urlParts = responsiveUrl.split('/');
     const filename = urlParts.pop() || '';
     const filenameWithoutExt = filename.replace(/\.[^/.]+$/, '');
-    
-    // Use specified format instead of forcing .jpg
     const sizedFilename = `${filenameWithoutExt}-${width}w.${format}`;
     return [...urlParts, sizedFilename].join('/');
   }

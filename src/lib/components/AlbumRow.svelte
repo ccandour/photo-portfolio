@@ -13,8 +13,8 @@
     goto(`/photo/${photoId}`);
   }
 
-  // Helper function to generate URLs for different image sizes
-  function getSizedImageUrl(originalUrl: string, width: number, format: 'webp' | 'jpg' = 'jpg'): string {
+  // Helper function to generate URLs for responsive images
+  function getSizedImageUrl(originalUrl: string, width: number, format: 'webp' | 'jpg'): string {
     // Convert from /photos/... to /responsive/...
     const responsiveUrl = originalUrl.replace('/photos/', '/responsive/');
     

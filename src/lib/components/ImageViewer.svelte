@@ -33,21 +33,6 @@
     return src.split('/').pop() || src;
   }
 
-  // Helper function to generate URLs for different image sizes
-  function getSizedImageUrl(originalUrl: string, width: number, format: string = 'jpg'): string {
-    // Convert from /photos/... to /responsive/...
-    const responsiveUrl = originalUrl.replace('/photos/', '/responsive/');
-    
-    // Extract path parts
-    const urlParts = responsiveUrl.split('/');
-    const filename = urlParts.pop() || '';
-    const filenameWithoutExt = filename.replace(/\.[^/.]+$/, '');
-    
-    // Always use .jpg for progressive variants
-    const sizedFilename = `${filenameWithoutExt}-${width}w.${format}`;
-    return [...urlParts, sizedFilename].join('/');
-  }
-
   onMount(() => {
     // If no explicit returnUrl was provided, use the albumId as fallback
     if (returnUrl === '/' && albumId) {
@@ -337,30 +322,13 @@
       class:show-metadata={showMetadata}
       on:click={toggleMetadata}
     >
-      <picture>
-        <!-- WebP for modern browsers -->
-        <source 
-          srcset={`${getSizedImageUrl(photo.src, 800, 'webp')} 800w, 
-                   ${getSizedImageUrl(photo.src, 1200, 'webp')} 1200w`}
-          sizes="100vw"
-          type="image/webp"
-        />
-        <!-- JPEG fallback -->
-        <source 
-          srcset={`${getSizedImageUrl(photo.src, 800, 'jpg')} 800w, 
-                   ${getSizedImageUrl(photo.src, 1200, 'jpg')} 1200w,
-                   ${photo.src} 2000w`}
-          sizes="100vw"
-          type="image/jpeg"
-        />
-        <!-- Fallback img -->
-        <img 
-          src={photo.src} 
-          alt={photo.title}
-          bind:this={imageElement}
-          loading="eager"
-        />
-      </picture>
+      <!-- Use full resolution image with progressive loading -->
+      <img 
+        src={photo.src} 
+        alt={photo.title}
+        bind:this={imageElement}
+        loading="eager"
+      />
       
       <div class="info-overlay">
         <div class="metadata">
