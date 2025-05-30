@@ -12,6 +12,21 @@
   function goToPhoto(photoId: string) {
     goto(`/photo/${photoId}`);
   }
+
+  // Helper function to generate URLs for different image sizes
+  function getSizedImageUrl(originalUrl: string, width: number, format: 'webp' | 'jpg' = 'jpg'): string {
+    // Convert from /photos/... to /responsive/...
+    const responsiveUrl = originalUrl.replace('/photos/', '/responsive/');
+    
+    // Extract path parts
+    const urlParts = responsiveUrl.split('/');
+    const filename = urlParts.pop() || '';
+    const filenameWithoutExt = filename.replace(/\.[^/.]+$/, '');
+    
+    // Use specified format
+    const sizedFilename = `${filenameWithoutExt}-${width}w.${format}`;
+    return [...urlParts, sizedFilename].join('/');
+  }
 </script>
 
 <section class="album-section">
@@ -22,7 +37,28 @@
   <div class="photos-container">
     {#each album.photos as photo}
       <div class="photo-item" on:click={() => goToPhoto(photo.id)}>
-        <img src={photo.src} alt={photo.title} loading="lazy" />
+        <picture>
+          <!-- Modern WebP format -->
+          <source 
+            srcset={`${getSizedImageUrl(photo.src, 400, 'webp')} 400w, 
+                     ${getSizedImageUrl(photo.src, 800, 'webp')} 800w`}
+            sizes="(max-width: 768px) 50vw, 33vw"
+            type="image/webp"
+          />
+          <!-- JPEG fallback -->
+          <source 
+            srcset={`${getSizedImageUrl(photo.src, 400, 'jpg')} 400w, 
+                     ${getSizedImageUrl(photo.src, 800, 'jpg')} 800w`}
+            sizes="(max-width: 768px) 50vw, 33vw"
+            type="image/jpeg"
+          />
+          <!-- Fallback img -->
+          <img 
+            src={getSizedImageUrl(photo.src, 400, 'jpg')} 
+            alt={photo.title}
+            loading="lazy"
+          />
+        </picture>
       </div>
     {/each}
   </div>
