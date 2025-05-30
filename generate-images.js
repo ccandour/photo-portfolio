@@ -14,6 +14,17 @@ const responsiveDir = path.join(__dirname, 'static/responsive');
 const targetSizes = [400, 800, 1200];
 const supportedFormats = ['.jpg', '.jpeg', '.png', '.webp'];
 
+// Check if JPEG is already progressive
+async function isProgressiveJpeg(imagePath) {
+  try {
+    const metadata = await sharp(imagePath).metadata();
+    return metadata.isProgressive || false;
+  } catch (err) {
+    console.warn(`Could not check progressive status for ${imagePath}:`, err.message);
+    return false;
+  }
+}
+
 // Process a single image
 async function processImage(imagePath) {
   try {
@@ -33,21 +44,29 @@ async function processImage(imagePath) {
     const metadata = await sharp(imagePath).metadata();
     const appropriateSizes = targetSizes.filter(size => size < metadata.width);
     
-    // Step 1: Convert original to progressive JPEG (in place)
+    // Step 1: Convert original to progressive JPEG ONLY if not already progressive
     if (extension === '.jpg' || extension === '.jpeg') {
-      console.log(`  Converting original to progressive JPEG...`);
-      const tempPath = imagePath + '.tmp';
+      const isAlreadyProgressive = await isProgressiveJpeg(imagePath);
       
-      await sharp(imagePath)
-        .jpeg({ 
-          quality: 95,        // High quality for originals
-          progressive: true,  // Enable progressive loading
-          mozjpeg: true      // Better compression
-        })
-        .toFile(tempPath);
-      
-      // Replace original with progressive version
-      await fs.rename(tempPath, imagePath);
+      if (!isAlreadyProgressive) {
+        console.log(`  Converting original to progressive JPEG...`);
+        const tempPath = imagePath + '.tmp';
+        
+        await sharp(imagePath)
+          .jpeg({ 
+            quality: 95,        // High quality for originals
+            progressive: true,  // Enable progressive loading
+            mozjpeg: true      // Better compression
+          })
+          .withMetadata()      // This preserves EXIF data!
+          .toFile(tempPath);
+        
+        // Replace original with progressive version
+        await fs.rename(tempPath, imagePath);
+        console.log(`  ✓ Original converted to progressive JPEG with EXIF preserved`);
+      } else {
+        console.log(`  ✓ Original is already progressive JPEG, skipping conversion`);
+      }
     }
     
     // Step 2: Generate responsive variants in both WebP and JPEG
@@ -142,7 +161,7 @@ async function main() {
   await processDirectory(sourceDir);
   
   console.log('\nProcessing complete!');
-  console.log('✓ Original photos converted to progressive JPEGs');
+  console.log('✓ Original photos checked/converted to progressive JPEGs');
   console.log('✓ Responsive WebP variants generated');
   console.log('✓ Responsive JPEG variants generated');
 }
