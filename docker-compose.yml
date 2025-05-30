@@ -9,4 +9,4 @@ services:
     restart: unless-stopped
     volumes:
       - ./static/photos:/app/static/photos
-      - ./responsive:/app/responsive
+      - ./static/responsive:/app/static/responsive
