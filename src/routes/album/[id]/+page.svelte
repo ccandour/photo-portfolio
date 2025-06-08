@@ -113,7 +113,7 @@
     font-size: 2.5rem;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.9);
-    margin: 0 0 1rem 0;
+    margin: 0 0 0.5rem 0;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -276,7 +276,7 @@
 
     main {
       margin-top: 3rem;
-      padding: 1rem 0;
+      padding: 1.5rem 0;
     }
 
     .album-info h1 {
@@ -298,7 +298,7 @@
     }
 
     .photo-title {
-      font-size: 0.7rem; /* Smaller on mobile */
+      font-size: 0.7rem;
     }
   }
 </style>

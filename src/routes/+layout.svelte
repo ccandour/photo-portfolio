@@ -158,16 +158,15 @@
     background: rgba(255, 255, 255, 0.1);
   }
 
-  /* Media queries for responsive navbar */
   @media (max-width: 480px) {
-    nav {
-      gap: 0.5rem;
-      padding: 0.75rem 0.5rem;
+    :global(nav) {
+      gap: 1.5rem; 
+      padding: 1rem 1.5rem; 
     }
     
-    nav a {
+    :global(nav a) {
       font-size: 1rem;
-      padding: 0.5rem 0.3rem;
+      padding: 0.5rem 0.75rem; 
     }
   }
 </style>

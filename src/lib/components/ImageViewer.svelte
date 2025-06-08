@@ -341,7 +341,7 @@
               <span class="label">Lens:</span>
               <span class="value">{photo.metadata.lens}</span>
             </div>
-            <div class="meta-item">
+            <div class="meta-item larger-only">
               <span class="label">FL:</span>
               <span class="value">{photo.metadata.focalLength}</span>
             </div>
@@ -1044,41 +1044,7 @@
     }
   }
 
-  @media (max-width: 480px) {
-    .album-info-overlay {
-      top: 0.75rem;
-      left: 0.75rem;
-      right: 0.75rem;
-    }
-
-    .expanded-info {
-      margin-right: 0;
-      padding: 0.5rem;
-      gap: 0.5rem;
-    }
-
-    .filename {
-      font-size: 0.75rem;
-    }
-
-    .album-name {
-      font-size: 0.7rem;
-    }
-
-    .integrated-close-button {
-      width: 40px;
-      height: 40px;
-    }
-
-    .integrated-close-button svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .mobile-progress-row .progress-bar {
-      height: 3px;
-    }
-  }
+  
 
   .mobile-layout {
     display: none;
@@ -1143,6 +1109,10 @@
 
     .mobile-progress-row .progress-bar {
       height: 3px;
+    }
+
+    .larger-only {
+      display: none;
     }
   }
 

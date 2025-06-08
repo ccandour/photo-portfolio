@@ -142,8 +142,8 @@
 
   @media (max-width: 768px) {
     .photo-item {
-      width: 160px; /* Smaller on tablet */
-      height: 107px;
+      width: 176px;
+      height: 176px;
     }
   }
 
@@ -153,8 +153,8 @@
     }
 
     .photo-item {
-      width: 140px; /* Even smaller on mobile */
-      height: 93px;
+      width: 160px;
+      height: 160px;
     }
   }
 </style>

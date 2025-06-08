@@ -186,10 +186,6 @@
       padding: 1rem 0;
     }
 
-    h1 {
-      font-size: 1.5rem;
-    }
-
     .gear-content {
       padding: 1.5rem;
     }

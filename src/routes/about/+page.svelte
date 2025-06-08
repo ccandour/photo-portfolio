@@ -184,6 +184,7 @@
     }
 
     main {
+      margin-top: 6rem;
       padding: 1.5rem 0;
     }
 
@@ -198,6 +199,7 @@
     }
 
     main {
+      margin-top: 5rem;
       padding: 1rem 0;
     }
   }
