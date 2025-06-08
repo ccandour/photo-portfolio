@@ -12,6 +12,16 @@
 
   const recommendations: TrackRecommendation[] = [
     {
+      searchQuery: 'artist:"Slowdive" track:"When the Sun Hits"',
+      description: 'absolute shoegaze perfection.',
+      mood: 'Ethereal'
+    },
+    {
+      searchQuery: 'artist:"Ozean" track:"Scenic"',
+      description: 'dreamy soundscapes.',
+      mood: 'Ambient'
+    },
+    {
       searchQuery: 'artist:"wifiskeleton" track:"Nope Your Too Late I Already Died"',
       description: 'rip wifiskeleton.',
       mood: 'Melancholic'
