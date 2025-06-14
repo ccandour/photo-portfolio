@@ -43,7 +43,7 @@
     <a href="/" class={$page.url.pathname === '/' ? 'active' : ''}>Home</a>
     <a href="/gear" class={$page.url.pathname === '/gear' ? 'active' : ''}>Gear</a>
     <a href="/music" class={$page.url.pathname === '/music' ? 'active' : ''}>Music</a>
-    <a href="/about" class={$page.url.pathname === '/about' ? 'active' : ''}>About me</a>
+    <a href="/about" class={$page.url.pathname === '/about' ? 'active' : ''}>About</a>
   </nav>
   {/if}
   
