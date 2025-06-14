@@ -11,56 +11,66 @@
   }
 
   const recommendations: TrackRecommendation[] = [
-    {
-      searchQuery: 'artist:"Slowdive" track:"When the Sun Hits"',
-      description: 'absolute shoegaze perfection.',
-      mood: 'Ethereal'
-    },
-    {
-      searchQuery: 'artist:"Ozean" track:"Scenic"',
-      description: 'dreamy soundscapes.',
-      mood: 'Ambient'
-    },
-    {
-      searchQuery: 'artist:"wifiskeleton" track:"Nope Your Too Late I Already Died"',
-      description: 'rip wifiskeleton.',
-      mood: 'Melancholic'
-    },
-    {
-      searchQuery: 'artist:"AERIAL LOVE FEED" track:"Raise Up"',
-      description: 'this album is pretty nice i think.',
-      mood: 'Atmospheric'
-    },
-    {
-      searchQuery: 'artist:"Cocteau Twins" track:"Frou-Frou Foxes in Midsummer Fires"',
-      description: 'now this is a masterpiece, go listen.',
-      mood: 'Dreamy'
-    },
-    {
-      searchQuery: 'artist:"Mazzy Star" track:"Fade Into You"',
-      description: 'classic.',
-      mood: 'Nostalgic'
-    },
-    {
-      searchQuery: 'artist:"Rumskib" track:"Where Are The Flowers"',
-      description: 'shoegazemaxxing.',
-      mood: 'Melancholic'
-    },
-    {
-      searchQuery: 'artist:"Alvvays" track:"Archie, Marry Me"',
-      description: 'Alvvays is so peak ong.',
-      mood: 'Upbeat'
-    },
-    {
-      searchQuery: 'artist:"The Smiths" track:"Cemetery Gates"',
-      description: 'i love the Smiths.',
-      mood: 'Poetic'
-    },
-    {
-      searchQuery: 'track:"Baby Baby" artist:"Going Steady"',
-      description: 'j-punk anthem.',
-      mood: 'Energetic'
-    }
+  {
+		searchQuery: 'artist:"Asobi Seksu" track:"Thursday"',
+		description: 'such an underrated record.',
+		mood: 'Ethereal'
+	},
+  {
+    searchQuery: 'artist:"Myslovitz" track:"Mieć czy być"',
+    description: 'całkowite kino.',
+    mood: 'Nostalgic'
+  },
+	{
+		searchQuery: 'artist:"Slowdive" track:"When the"',
+		description: 'absolute perfection.',
+		mood: 'Ethereal'
+	},
+	{
+		searchQuery: 'artist:"Ozean" track:"Scenic"',
+		description: 'dreamy soundscapes.',
+		mood: 'Ambient'
+	},
+	{
+		searchQuery: 'artist:"wifiskeleton" track:"Nope Your Too Late I Already Died"',
+		description: 'rip man.',
+		mood: 'Melancholic'
+	},
+	{
+		searchQuery: 'artist:"Cocteau Twins" track:"Frou-Frou Foxes in Midsummer Fires"',
+		description: 'now this is a masterpiece, go listen.',
+		mood: 'Dreamy'
+	},
+	{
+		searchQuery: 'artist:"Mazzy Star" track:"Fade Into You"',
+		description: 'ITERATIONS.',
+		mood: 'Nostalgic'
+	},
+	{
+		searchQuery: 'artist:"Rumskib" track:"Where Are The Flowers"',
+		description: 'shoegazemaxxing.',
+		mood: 'Melancholic'
+	},
+	{
+		searchQuery: 'artist:"Alvvays" track:"Archie, Marry Me"',
+		description: 'Alvvays is so peak ong.',
+		mood: 'Upbeat'
+	},
+	{
+		searchQuery: 'artist:"The Smiths" track:"Cemetery Gates"',
+		description: 'i love the Smiths.',
+		mood: 'Poetic'
+	},
+	{
+		searchQuery: 'track:"Baby Baby" artist:"Going Steady"',
+		description: 'j-punk anthem.',
+		mood: 'Energetic'
+	},
+	{
+		searchQuery: 'artist:"The Cure" track:"Just Like Heaven"',
+		description: 'show-me show-me.',
+		mood: 'Uplifting'
+	}
   ];
 
   let loading = true;
