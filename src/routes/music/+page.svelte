@@ -22,7 +22,7 @@
     mood: 'Nostalgic'
   },
 	{
-		searchQuery: 'artist:"Slowdive" track:"When the"',
+		searchQuery: 'artist:"Slowdive" track:"When"',
 		description: 'absolute perfection.',
 		mood: 'Ethereal'
 	},
