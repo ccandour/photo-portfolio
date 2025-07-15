@@ -27,6 +27,11 @@
     const sizedFilename = `${filenameWithoutExt}-${width}w.${format}`;
     return [...urlParts, sizedFilename].join('/');
   }
+
+  // Function to extract filename from path
+  function getFileName(src: string): string {
+    return src.split('/').pop() || src;
+  }
 </script>
 
 <section class="album-section">
@@ -59,6 +64,11 @@
             loading="lazy"
           />
         </picture>
+        
+        <!-- Filename overlay -->
+        <div class="filename-overlay">
+          <span class="filename">{getFileName(photo.src)}</span>
+        </div>
       </div>
     {/each}
   </div>
@@ -76,14 +86,14 @@
     margin-bottom: 1.5rem;
     cursor: pointer;
     text-decoration: underline;
-    text-decoration-color: rgba(255, 255, 255, 0.3); /* Subtle initial underline */
+    text-decoration-color: rgba(255, 255, 255, 0.3);
     text-underline-offset: 4px;
     transition: all 0.2s ease;
   }
 
   .album-title:hover {
     color: rgba(255, 255, 255, 1);
-    text-decoration-color: rgba(255, 255, 255, 0.8); /* Brighter on hover */
+    text-decoration-color: rgba(255, 255, 255, 0.8);
   }
 
   .photos-container {
@@ -97,29 +107,51 @@
 
   .photo-item {
     flex: none;
-    width: 200px; /* Fixed width for homepage */
-    height: 133px; /* Fixed height to maintain 3:2 aspect ratio */
+    width: 300px;
+    height: 200px;
     overflow: hidden;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.05);
-  }
-
-  .photo-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    position: relative;
   }
 
   .photo-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .photo-item:hover img {
     transform: scale(1.05);
+  }
+
+  .filename-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2;
+  }
+
+  .photo-item:hover .filename-overlay {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .filename {
+    color: white;
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
   .photos-container::-webkit-scrollbar {
