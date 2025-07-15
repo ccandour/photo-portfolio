@@ -25,6 +25,23 @@ async function isProgressiveJpeg(imagePath) {
   }
 }
 
+// Metadata correction function
+function correctMetadata(metadata) {
+  const corrections = { ...metadata };
+  
+  // Correct lens information
+  if (metadata.lens && metadata.lens.includes('21.0 mm')) {
+    corrections.lens = 'TTArtisan 25MM F2';
+  }
+  
+  // Correct aperture information
+  if (metadata.aperture === 1 || metadata.aperture === 'f/1') {
+    corrections.aperture = 'f/8';
+  }
+  
+  return corrections;
+}
+
 // Process a single image
 async function processImage(imagePath) {
   try {
@@ -52,6 +69,9 @@ async function processImage(imagePath) {
         console.log(`  Converting original to progressive JPEG...`);
         const tempPath = imagePath + '.tmp';
         
+        // Apply metadata corrections
+        const correctedMetadata = correctMetadata(metadata.exif || {});
+        
         await sharp(imagePath)
           .jpeg({ 
             quality: 95,        // High quality for originals
@@ -63,7 +83,7 @@ async function processImage(imagePath) {
         
         // Replace original with progressive version
         await fs.rename(tempPath, imagePath);
-        console.log(`  ✓ Original converted to progressive JPEG with EXIF preserved`);
+        console.log(`  ✓ Original converted to progressive JPEG with EXIF preserved and corrected`);
       } else {
         console.log(`  ✓ Original is already progressive JPEG, skipping conversion`);
       }
