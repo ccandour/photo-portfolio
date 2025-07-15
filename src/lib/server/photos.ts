@@ -109,6 +109,13 @@ export async function loadAlbums(): Promise<Album[]> {
         }
     }
 
+    // Sort albums by date (newest first)
+    albums.sort((a, b) => {
+        const dateA = new Date(a.metadata.date.split('.').reverse().join('-'));
+        const dateB = new Date(b.metadata.date.split('.').reverse().join('-'));
+        return dateB.getTime() - dateA.getTime(); // Newest first
+    });
+    
     console.log(`Total albums loaded: ${albums.length}`);
     return albums;
 }
