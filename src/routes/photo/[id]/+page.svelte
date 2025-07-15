@@ -13,6 +13,7 @@
 {#if data.photo}
   <ImageViewer 
     photo={data.photo} 
+    photos={data.album.photos}
     prevId={data.prevId} 
     nextId={data.nextId}
     albumName={albumName}

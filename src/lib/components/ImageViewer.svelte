@@ -5,6 +5,7 @@
   import type { Photo } from '$lib/types';
   
   export let photo: Photo;
+  export let photos: Photo[] = [];
   export let prevId: string | null = null;
   export let nextId: string | null = null;
   export let albumId: string | null = null;
@@ -20,6 +21,13 @@
   let isMobile = false;
   let isHoveringTrigger = false;
   let isHoveringDownloadMenu = false;
+  let currentImageSrc = '';
+  let isUpgrading = false;
+
+  // Find current photo index and adjacent photos
+  $: currentIndex = photos.findIndex(p => p.id === photo.id);
+  $: prevPhoto = currentIndex > 0 ? photos[currentIndex - 1] : null;
+  $: nextPhoto = currentIndex < photos.length - 1 ? photos[currentIndex + 1] : null;
 
   const downloadSizes = [
     { label: 'Small (1024px)', width: 1024 },
@@ -31,6 +39,153 @@
   // Function to extract filename from path
   function getFileName(src: string): string {
     return src.split('/').pop() || src;
+  }
+
+  // Generate responsive image URLs - corrected to use /responsive directory
+  function getResponsiveUrl(originalUrl: string, size: number): string {
+    // originalUrl is like: /photos/gdansk/GDG-001.jpg
+    // We want: /responsive/gdansk/GDG-001-800w.jpg
+    
+    const parts = originalUrl.split('/');
+    const filename = parts.pop() || ''; // GDG-001.jpg
+    const filenameWithoutExt = filename.replace(/\.[^/.]+$/, ''); // GDG-001
+    
+    // Get the album name (gdansk, luzern, etc.)
+    const albumName = parts[parts.length - 1]; // gdansk
+    
+    return `/responsive/${albumName}/${filenameWithoutExt}-${size}w.jpg`;
+  }
+
+  // Get the best initial size based on screen
+  function getInitialSize(): number {
+    if (typeof window === 'undefined') return 1200;
+    
+    const screenWidth = window.innerWidth;
+    const dpr = window.devicePixelRatio || 1;
+    const effectiveWidth = screenWidth * dpr;
+    
+    if (effectiveWidth <= 400) return 400;
+    if (effectiveWidth <= 800) return 800;
+    return 1200;
+  }
+
+  // Progressive loading class
+  class ProgressiveImageLoader {
+    private cache = new Map<string, HTMLImageElement>();
+    private loadingPromises = new Map<string, Promise<HTMLImageElement>>();
+
+    async loadImage(src: string): Promise<HTMLImageElement> {
+      if (this.cache.has(src)) {
+        return this.cache.get(src)!;
+      }
+
+      if (this.loadingPromises.has(src)) {
+        return this.loadingPromises.get(src)!;
+      }
+
+      const promise = new Promise<HTMLImageElement>((resolve, reject) => {
+        const img = new Image();
+        
+        img.onload = () => {
+          this.cache.set(src, img);
+          this.loadingPromises.delete(src);
+          resolve(img);
+        };
+
+        img.onerror = () => {
+          this.loadingPromises.delete(src);
+          reject(new Error(`Failed to load: ${src}`));
+        };
+
+        img.src = src;
+      });
+
+      this.loadingPromises.set(src, promise);
+      return promise;
+    }
+
+    isLoaded(src: string): boolean {
+      return this.cache.has(src);
+    }
+
+    // Preload at low priority (won't block main image)
+    preloadLowPriority(src: string): void {
+      if (!this.cache.has(src) && !this.loadingPromises.has(src)) {
+        // Use setTimeout to ensure it runs after main image loading
+        setTimeout(() => {
+          this.loadImage(src).catch(() => {
+            // Silently fail for preload
+          });
+        }, 100);
+      }
+    }
+  }
+
+  const imageLoader = new ProgressiveImageLoader();
+
+  // Load image progressively: responsive first, then full resolution
+  async function loadImageProgressively(targetPhoto: Photo) {
+    const initialSize = getInitialSize();
+    const responsiveUrl = getResponsiveUrl(targetPhoto.src, initialSize);
+    
+    try {
+      // Step 1: Load responsive version immediately
+      console.log(`Loading responsive: ${responsiveUrl}`);
+      const responsiveImg = await imageLoader.loadImage(responsiveUrl);
+      
+      // Update image immediately with responsive version
+      if (imageElement) {
+        imageElement.src = responsiveImg.src;
+        currentImageSrc = responsiveImg.src;
+      }
+      
+      // Step 2: Load full resolution in background
+      console.log(`Upgrading to full resolution: ${targetPhoto.src}`);
+      isUpgrading = true;
+      
+      const fullImg = await imageLoader.loadImage(targetPhoto.src);
+      
+      // Smooth transition to full resolution
+      if (imageElement && targetPhoto.id === photo.id) {
+        imageElement.src = fullImg.src;
+        currentImageSrc = fullImg.src;
+      }
+      
+      isUpgrading = false;
+      console.log(`✓ Upgraded to full resolution`);
+      
+    } catch (error) {
+      console.error('Error loading image:', error);
+      isUpgrading = false;
+      
+      // Fallback to original
+      if (imageElement) {
+        imageElement.src = targetPhoto.src;
+        currentImageSrc = targetPhoto.src;
+      }
+    }
+  }
+
+  // Smart preloading: only responsive versions of adjacent images
+  function preloadAdjacentResponsive() {
+    if (photos.length === 0) return;
+    
+    const size = getInitialSize();
+    
+    // Preload responsive versions of adjacent images only
+    [prevPhoto, nextPhoto].forEach(adjacentPhoto => {
+      if (adjacentPhoto) {
+        const responsiveUrl = getResponsiveUrl(adjacentPhoto.src, size);
+        imageLoader.preloadLowPriority(responsiveUrl);
+      }
+    });
+  }
+
+  // Load new image when photo changes
+  $: if (photo) {
+    loadImageProgressively(photo);
+    // Start preloading adjacent responsive images after main image starts loading
+    setTimeout(() => preloadAdjacentResponsive(), 200);
   }
 
   onMount(() => {
@@ -207,6 +362,12 @@
   }
 </script>
 
+<!-- Remove the heavy preload links, we'll handle this in JS -->
+<svelte:head>
+  <!-- Only preload current image at responsive size -->
+  <link rel="preload" as="image" href={getResponsiveUrl(photo.src, getInitialSize())} />
+</svelte:head>
+
 <svelte:window on:keydown={handleKeydown} on:mousemove={handleMouseMove}/>
 
 <div class="viewer">
@@ -320,15 +481,26 @@
     <div 
       class="photo-container" 
       class:show-metadata={showMetadata}
+      class:upgrading={isUpgrading}
       on:click={toggleMetadata}
     >
-      <!-- Use full resolution image with progressive loading -->
+      <!-- Progressive loading image -->
       <img 
-        src={photo.src} 
-        alt={photo.title}
         bind:this={imageElement}
+        src={currentImageSrc || photo.src}
+        alt={photo.title}
         loading="eager"
+        class="main-image"
+        class:upgrading={isUpgrading}
       />
+      
+      <!-- Optional: Show upgrade indicator -->
+      {#if isUpgrading}
+        <div class="upgrade-indicator">
+          <div class="upgrade-dot"></div>
+          Enhancing...
+        </div>
+      {/if}
       
       <div class="info-overlay">
         <div class="metadata">
@@ -799,7 +971,7 @@
     pointer-events: auto;
   }
 
-  .album-info-overlay {
+  .album-info_overlay {
     position: absolute;
     top: 1rem;
     left: 1rem;
@@ -1044,8 +1216,6 @@
     }
   }
 
-  
-
   .mobile-layout {
     display: none;
     flex-direction: column;
@@ -1136,5 +1306,68 @@
   @keyframes subtleFade {
     0%, 20%, 80%, 100% { opacity: 0.2; }
     40%, 60% { opacity: 0.6; }
+  }
+
+  .main-image {
+    transition: opacity 0.2s ease;
+  }
+  
+  .main-image.upgrading {
+    /* Subtle indication that upgrade is happening */
+    opacity: 0.95;
+  }
+  
+  .photo-container.upgrading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+      transparent 40%, 
+      rgba(255,255,255,0.02) 50%, 
+      transparent 60%
+    );
+    background-size: 20px 20px;
+    animation: shimmer 2s infinite linear;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: -20px 0; }
+    100% { background-position: 20px 0; }
+  }
+  
+  .upgrade-indicator {
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 10;
+    pointer-events: none;
+  }
+  
+  .upgrade-dot {
+    width: 6px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
   }
 </style>
