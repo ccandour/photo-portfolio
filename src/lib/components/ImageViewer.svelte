@@ -629,12 +629,13 @@
     overflow: hidden;
   }
 
-  img {
+  .main-image {
     max-width: 100%;
     max-height: 100vh;
     width: auto;
     height: auto;
     object-fit: contain;
+    display: block;
   }
 
   .info-overlay {
