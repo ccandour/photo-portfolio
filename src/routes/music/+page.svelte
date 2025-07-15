@@ -11,63 +11,78 @@
   }
 
   const recommendations: TrackRecommendation[] = [
-  {
-		searchQuery: 'artist:"Asobi Seksu" track:"Thursday"',
+	{
+		searchQuery: 'LovelieSCrushing Babysbreath',
+		description: 'ethereal beauty.',
+		mood: 'Ethereal'
+	},
+	{
+		searchQuery: 'LSD and the Search for God Dont Care',
+		description: 'layers of sound that take you places.',
+		mood: 'Melancholic'
+	},
+  	{
+		searchQuery: 'My Bloody Valentine When You Sleep',
+		description: 'where it all began.',
+		mood: 'Dreamy'
+	},
+	{
+		searchQuery: 'Asobi Seksu Goodbye',
 		description: 'such an underrated record.',
 		mood: 'Ethereal'
 	},
   {
-    searchQuery: 'artist:"Myslovitz" track:"Mieć czy być"',
+    searchQuery: 'Myslovitz Wielki błękit',
     description: 'całkowite kino.',
     mood: 'Nostalgic'
   },
 	{
-		searchQuery: 'artist:"Slowdive" track:"When"',
+		searchQuery: 'Slowdive When the Sun Hits',
 		description: 'absolute perfection.',
 		mood: 'Ethereal'
 	},
 	{
-		searchQuery: 'artist:"Ozean" track:"Scenic"',
+		searchQuery: 'Ozean Scenic',
 		description: 'dreamy soundscapes.',
 		mood: 'Ambient'
 	},
 	{
-		searchQuery: 'artist:"wifiskeleton" track:"Nope Your Too Late I Already Died"',
+		searchQuery: 'wifiskeleton Nope Your Too Late I Already Died',
 		description: 'rip man.',
 		mood: 'Melancholic'
 	},
 	{
-		searchQuery: 'artist:"Cocteau Twins" track:"Frou-Frou Foxes in Midsummer Fires"',
+		searchQuery: 'Cocteau Twins Frou-Frou Foxes in Midsummer Fires',
 		description: 'now this is a masterpiece, go listen.',
 		mood: 'Dreamy'
 	},
 	{
-		searchQuery: 'artist:"Mazzy Star" track:"Fade Into You"',
+		searchQuery: 'Mazzy Star Fade Into You',
 		description: 'ITERATIONS.',
 		mood: 'Nostalgic'
 	},
 	{
-		searchQuery: 'artist:"Rumskib" track:"Where Are The Flowers"',
+		searchQuery: 'Rumskib Where Are The Flowers',
 		description: 'shoegazemaxxing.',
 		mood: 'Melancholic'
 	},
 	{
-		searchQuery: 'artist:"Alvvays" track:"Archie, Marry Me"',
+		searchQuery: 'Alvvays Archie, Marry Me',
 		description: 'Alvvays is so peak ong.',
 		mood: 'Upbeat'
 	},
 	{
-		searchQuery: 'artist:"The Smiths" track:"Cemetery Gates"',
+		searchQuery: 'The Smiths Cemetery Gates',
 		description: 'i love the Smiths.',
 		mood: 'Poetic'
 	},
 	{
-		searchQuery: 'track:"Baby Baby" artist:"Going Steady"',
+		searchQuery: 'Baby Baby Going Steady',
 		description: 'j-punk anthem.',
 		mood: 'Energetic'
 	},
 	{
-		searchQuery: 'artist:"The Cure" track:"Just Like Heaven"',
+		searchQuery: 'The Cure Just Like Heaven',
 		description: 'show-me show-me.',
 		mood: 'Uplifting'
 	}
