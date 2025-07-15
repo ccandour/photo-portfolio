@@ -143,10 +143,22 @@
       
       const fullImg = await imageLoader.loadImage(targetPhoto.src);
       
-      // Smooth transition to full resolution
+      // Step 3: Firefox-friendly image update
       if (imageElement && targetPhoto.id === photo.id) {
-        imageElement.src = fullImg.src;
-        currentImageSrc = fullImg.src;
+        // Use decode() to ensure image is ready before updating
+        try {
+          const tempImg = new Image();
+          tempImg.src = fullImg.src;
+          await tempImg.decode();
+          
+          // Now update the src - Firefox won't flicker
+          imageElement.src = fullImg.src;
+          currentImageSrc = fullImg.src;
+        } catch (decodeError) {
+          // Fallback for older browsers
+          imageElement.src = fullImg.src;
+          currentImageSrc = fullImg.src;
+        }
       }
       
       console.log(`✓ Upgraded to full resolution`);
