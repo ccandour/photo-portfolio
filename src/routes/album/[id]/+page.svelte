@@ -391,7 +391,7 @@
 
   .album-info h1 {
     font-size: 2.5rem;
-    font-weight: 400;
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.9);
     margin: 0;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
