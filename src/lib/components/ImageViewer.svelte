@@ -134,26 +134,49 @@
       
       // Update image immediately with responsive version
       if (imageElement) {
+        // Ensure consistent scaling by setting CSS properties
+        imageElement.style.transition = 'none';
         imageElement.src = responsiveImg.src;
         currentImageSrc = responsiveImg.src;
+        
+        // Force reflow to ensure image dimensions are calculated
+        void imageElement.offsetHeight;
+        
+        // Re-enable transitions
+        requestAnimationFrame(() => {
+          imageElement.style.transition = '';
+        });
       }
       
       // Step 2: Load full resolution in background
+
+      // If screen is smaller than 1200px, skip full resolution
+      if (initialSize < 1200) {
+        console.log(`Skipping full resolution for small screen: ${initialSize}px`);
+        return;
+      }
       console.log(`Upgrading to full resolution: ${targetPhoto.src}`);
       
       const fullImg = await imageLoader.loadImage(targetPhoto.src);
       
-      // Step 3: Firefox-friendly image update
+      // Step 3: Seamless upgrade without layout shift
       if (imageElement && targetPhoto.id === photo.id) {
-        // Use decode() to ensure image is ready before updating
         try {
           const tempImg = new Image();
           tempImg.src = fullImg.src;
           await tempImg.decode();
           
-          // Now update the src - Firefox won't flicker
+          // Disable transitions during upgrade to prevent flicker
+          imageElement.style.transition = 'none';
           imageElement.src = fullImg.src;
           currentImageSrc = fullImg.src;
+          
+          // Force reflow and re-enable transitions
+          void imageElement.offsetHeight;
+          requestAnimationFrame(() => {
+            imageElement.style.transition = '';
+          });
+          
         } catch (decodeError) {
           // Fallback for older browsers
           imageElement.src = fullImg.src;
@@ -399,7 +422,7 @@
   >
     <!-- Updated album info overlay with integrated close button -->
     <div class="album-info-overlay">
-      <div class="photo-counter-minimal">{currentPhotoIndex}/{totalPhotos}</div>
+      <div class="photo-counter-minimal">{currentPhotoIndex} / {totalPhotos}</div>
       
       <div class="expanded-info">
         <!-- Mobile layout -->
@@ -629,13 +652,38 @@
     overflow: hidden;
   }
 
+  /* Force image to fill available space more aggressively */
+  .photo-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* Enhanced image sizing for better consistency */
+  /* Remove the duplicate .main-image rules and replace with this single consistent rule */
   .main-image {
-    max-width: 100%;
+    /* Force image to fill viewport while maintaining aspect ratio */
+    max-width: 100vw;
     max-height: 100vh;
-    width: auto;
-    height: auto;
+    width: 100vw;
+    height: 100vh;
     object-fit: contain;
+    object-position: center;
     display: block;
+  }
+
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    .main-image {
+      max-width: 100vw;
+      max-height: calc(100vh - 140px);
+      width: 100vw;
+      height: calc(100vh - 140px);
+    }
   }
 
   .info-overlay {
@@ -980,8 +1028,11 @@
   }
 
   .photo-counter-minimal {
-    width: 48px;
     height: 48px;
+    width:fit-content;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    padding-inline: 0.8rem;
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -995,8 +1046,6 @@
     color: rgba(255, 255, 255, 0.8);
     transition: all 0.3s ease;
     pointer-events: auto;
-    letter-spacing: 0.3em;
-    text-indent: 0.3em;
   }
 
   .expanded-info {
