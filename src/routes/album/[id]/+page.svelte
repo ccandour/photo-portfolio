@@ -117,10 +117,17 @@
 
   // Filter options
   $: filters = [
-    { id: 'all', label: 'All<span class="filter-hide-mobile"> Photos</span>', count: data.album?.photos?.length || 0 },
+    { id: 'all', label: 'All Photos', count: data.album?.photos?.length || 0 },
     { id: 'monochrome', label: 'Monochrome', count: monochromeCount },
     { id: 'color', label: 'Color', count: colorCount }
   ];
+  // If on viewport width less than 480px, hide the "Photos" text in the filter label
+  if (window.innerWidth < 480) {
+    filters = filters.map(filter => ({
+      ...filter,
+      label: filter.label.replace('Photos', '')
+    }));
+  }
 
   // Function to calculate grid row span based on image aspect ratio
   function calculateRowSpan(photo: any): number {
@@ -225,9 +232,7 @@
             class:active={selectedFilter === filter.id}
             on:click={() => selectedFilter = filter.id}
           >
-            <span>
-              {@html filter.label}
-            </span>
+            {filter.label}
             <span class="filter-count">({filter.count})</span>
           </button>
         {/each}
@@ -495,14 +500,7 @@
   }
 
   @media (max-width: 420px) {
-  .hide-mobile {
-    display: none;
-  }
-}
-
-  /* For the filter button - hides at 600px */
-  @media (max-width: 600px) {
-    .filter-hide-mobile {
+    .hide-mobile {
       display: none;
     }
   }
