@@ -67,7 +67,6 @@
           <!-- Fallback img -->
           <img 
             src={getSizedImageUrl(photo.src, 400, 'jpg')} 
-            alt={photo.title}
             loading="lazy"
           />
         </picture>

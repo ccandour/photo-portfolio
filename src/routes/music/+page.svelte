@@ -150,7 +150,34 @@
 
     <div class="recommendations">
       {#if loading}
-        <p>Loading tracks...</p>
+        <!-- Loading placeholders -->
+        {#each Array(5) as _, i}
+          <div class="track-card placeholder">
+            <div class="track-main">
+              <div class="album-art">
+                <div class="placeholder-image"></div>
+                <div class="placeholder-play-button"></div>
+              </div>
+              <div class="track-details">
+                <div class="track-header">
+                  <div>
+                    <div class="placeholder-text placeholder-title"></div>
+                    <div class="placeholder-text placeholder-artist"></div>
+                    <div class="placeholder-text placeholder-album"></div>
+                  </div>
+                  <div class="placeholder-text placeholder-duration"></div>
+                </div>
+                <div class="track-meta">
+                  <div class="placeholder-mood"></div>
+                </div>
+                <div class="placeholder-text placeholder-description"></div>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress" style="width: 0%" />
+            </div>
+          </div>
+        {/each}
       {:else}
         {#each recommendations as rec}
           {#if rec.track}
@@ -165,11 +192,9 @@
                   >
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       {#if currentTrackId === rec.track.id && isPlaying}
-                        <!-- Properly centered pause icon -->
                         <rect x="6" y="4" width="4" height="16" rx="1"/>
                         <rect x="15" y="4" width="4" height="16" rx="1"/>
                       {:else}
-                        <!-- Properly centered play icon -->
                         <polygon points="6 3 21 12 6 21" />
                       {/if}
                     </svg>
@@ -385,6 +410,149 @@
     height: 100%;
     background: rgba(255, 255, 255, 0.7);
     transition: width 0.1s linear;
+  }
+
+  /* Loading placeholder styles */
+  .track-card.placeholder {
+    pointer-events: none;
+  }
+
+  .placeholder-image {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .placeholder-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+    animation-delay: 0.2s;
+  }
+
+  .placeholder-text {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .placeholder-title {
+    height: 1.2rem;
+    width: 60%;
+    margin-bottom: 0.3rem;
+    animation-delay: 0.1s;
+  }
+
+  .placeholder-artist {
+    height: 0.9rem;
+    width: 45%;
+    margin-bottom: 0.3rem;
+    animation-delay: 0.2s;
+  }
+
+  .placeholder-album {
+    height: 0.8rem;
+    width: 70%;
+    margin-bottom: 1rem;
+    animation-delay: 0.3s;
+  }
+
+  .placeholder-duration {
+    height: 0.8rem;
+    width: 40px;
+    animation-delay: 0.4s;
+  }
+
+  .placeholder-mood {
+    display: inline-block;
+    height: 1.4rem;
+    width: 60px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+    animation-delay: 0.5s;
+  }
+
+  .placeholder-description {
+    height: 0.9rem;
+    width: 80%;
+    animation-delay: 0.6s;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  /* Mobile placeholder adjustments */
+  @media (max-width: 768px) {
+    .track-card.placeholder .track-main {
+      padding: 1rem;
+    }
+
+    .placeholder-play-button {
+      width: 40px;
+      height: 40px;
+    }
+
+    .placeholder-title {
+      height: 1rem;
+    }
+
+    .placeholder-artist {
+      height: 0.85rem;
+    }
+
+    .placeholder-mood,
+    .placeholder-description {
+      display: none;
+    }
+
+    .placeholder-album {
+      margin-bottom: 0rem; /* Remove bottom margin since mood/description are hidden */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .track-card.placeholder .track-main {
+      padding: 0.75rem;
+      gap: 0.75rem;
+    }
+
+    .track-card.placeholder .album-art {
+      width: 60px;
+      height: 60px;
+    }
+
+    .placeholder-play-button {
+      width: 32px;
+      height: 32px;
+    }
+
+    .placeholder-title {
+      height: 0.9rem;
+    }
+
+    .placeholder-artist {
+      height: 0.8rem;
+    }
+
+    .placeholder-album {
+      margin-bottom: 0; /* Remove bottom margin completely on mobile */
+    }
   }
 
   @media (max-width: 768px) {
