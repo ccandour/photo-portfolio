@@ -9,9 +9,24 @@
   let selectedFilter = 'all';
   let viewMode = 'grid'; // 'grid' or 'masonry'
   let showStats = false;
+  let isMobile = false; // Add this
   
   onMount(() => {
     mounted = true;
+    // Check if mobile after component mounts
+    isMobile = window.innerWidth < 480;
+    
+    // Listen for resize events to update mobile state
+    const handleResize = () => {
+      isMobile = window.innerWidth < 480;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   });
 
   // Function to extract filename from path
@@ -115,19 +130,16 @@
   })();
 
 
-  // Filter options
+  // Filter options - now reactive to isMobile
   $: filters = [
-    { id: 'all', label: 'All Photos', count: data.album?.photos?.length || 0 },
+    { 
+      id: 'all', 
+      label: isMobile ? 'All' : 'All Photos', 
+      count: data.album?.photos?.length || 0 
+    },
     { id: 'monochrome', label: 'Monochrome', count: monochromeCount },
     { id: 'color', label: 'Color', count: colorCount }
   ];
-  // If on viewport width less than 480px, hide the "Photos" text in the filter label
-  if (window.innerWidth < 480) {
-    filters = filters.map(filter => ({
-      ...filter,
-      label: filter.label.replace('Photos', '')
-    }));
-  }
 
   // Function to calculate grid row span based on image aspect ratio
   function calculateRowSpan(photo: any): number {
