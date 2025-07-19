@@ -22,6 +22,8 @@
   let isHoveringTrigger = false;
   let isHoveringDownloadMenu = false;
   let currentImageSrc = '';
+  let currentLoadingPhotoId = '';
+  let currentAbortController: AbortController | null = null; // Add abort controller
 
   // Find current photo index and adjacent photos
   $: currentIndex = photos.findIndex(p => p.id === photo.id);
@@ -68,12 +70,12 @@
     return 1200;
   }
 
-  // Progressive loading class
+  // Progressive loading class with abort support
   class ProgressiveImageLoader {
     private cache = new Map<string, HTMLImageElement>();
     private loadingPromises = new Map<string, Promise<HTMLImageElement>>();
 
-    async loadImage(src: string): Promise<HTMLImageElement> {
+    async loadImage(src: string, signal?: AbortSignal): Promise<HTMLImageElement> {
       if (this.cache.has(src)) {
         return this.cache.get(src)!;
       }
@@ -85,7 +87,20 @@
       const promise = new Promise<HTMLImageElement>((resolve, reject) => {
         const img = new Image();
         
+        // Handle abort signal
+        if (signal) {
+          signal.addEventListener('abort', () => {
+            img.src = ''; // Stop loading
+            this.loadingPromises.delete(src);
+            reject(new Error('Aborted'));
+          });
+        }
+        
         img.onload = () => {
+          if (signal?.aborted) {
+            reject(new Error('Aborted'));
+            return;
+          }
           this.cache.set(src, img);
           this.loadingPromises.delete(src);
           resolve(img);
@@ -122,19 +137,40 @@
 
   const imageLoader = new ProgressiveImageLoader();
 
-  // Load image progressively: responsive first, then full resolution
+  // Load image progressively with proper cancellation
   async function loadImageProgressively(targetPhoto: Photo) {
+    // Cancel any previous loading
+    if (currentAbortController) {
+      currentAbortController.abort();
+    }
+    
+    const loadingPhotoId = targetPhoto.id;
+    currentLoadingPhotoId = loadingPhotoId;
+    
+    // Create new abort controller for this loading session
+    const abortController = new AbortController();
+    currentAbortController = abortController;
+    const signal = abortController.signal;
+    
     const initialSize = getInitialSize();
     const responsiveUrl = getResponsiveUrl(targetPhoto.src, initialSize);
     
     try {
+      // Check if aborted before starting
+      if (signal.aborted) return;
+      
       // Step 1: Load responsive version immediately
       console.log(`Loading responsive: ${responsiveUrl}`);
-      const responsiveImg = await imageLoader.loadImage(responsiveUrl);
+      const responsiveImg = await imageLoader.loadImage(responsiveUrl, signal);
+      
+      // Frequent cancellation checks
+      if (signal.aborted || currentLoadingPhotoId !== loadingPhotoId || targetPhoto.id !== photo.id) {
+        console.log(`Abandoned responsive load for ${loadingPhotoId} - user navigated away`);
+        return;
+      }
       
       // Update image immediately with responsive version
-      if (imageElement) {
-        // Ensure consistent scaling by setting CSS properties
+      if (imageElement && !signal.aborted) {
         imageElement.style.transition = 'none';
         imageElement.src = responsiveImg.src;
         currentImageSrc = responsiveImg.src;
@@ -144,8 +180,15 @@
         
         // Re-enable transitions
         requestAnimationFrame(() => {
-          imageElement.style.transition = '';
+          if (!signal.aborted) {
+            imageElement.style.transition = '';
+          }
         });
+      }
+      
+      // Check again before proceeding to full resolution
+      if (signal.aborted || currentLoadingPhotoId !== loadingPhotoId || targetPhoto.id !== photo.id) {
+        return;
       }
       
       // Step 2: Load full resolution in background
@@ -157,14 +200,30 @@
       }
       console.log(`Upgrading to full resolution: ${targetPhoto.src}`);
       
-      const fullImg = await imageLoader.loadImage(targetPhoto.src);
+      const fullImg = await imageLoader.loadImage(targetPhoto.src, signal);
       
-      // Step 3: Seamless upgrade without layout shift
-      if (imageElement && targetPhoto.id === photo.id) {
+      // Check again after full image loads
+      if (signal.aborted || currentLoadingPhotoId !== loadingPhotoId || targetPhoto.id !== photo.id) {
+        console.log(`Abandoned full resolution load for ${loadingPhotoId} - user navigated away`);
+        return;
+      }
+      
+      // Step 3: Seamless upgrade
+      if (imageElement && !signal.aborted) {
         try {
           const tempImg = new Image();
           tempImg.src = fullImg.src;
+          
+          // Check before decode
+          if (signal.aborted) return;
+          
           await tempImg.decode();
+          
+          // Final check before applying
+          if (signal.aborted || currentLoadingPhotoId !== loadingPhotoId || targetPhoto.id !== photo.id) {
+            console.log(`Abandoned final upgrade for ${loadingPhotoId} - user navigated away`);
+            return;
+          }
           
           // Disable transitions during upgrade to prevent flicker
           imageElement.style.transition = 'none';
@@ -174,23 +233,32 @@
           // Force reflow and re-enable transitions
           void imageElement.offsetHeight;
           requestAnimationFrame(() => {
-            imageElement.style.transition = '';
+            if (!signal.aborted) {
+              imageElement.style.transition = '';
+            }
           });
           
         } catch (decodeError) {
           // Fallback for older browsers
-          imageElement.src = fullImg.src;
-          currentImageSrc = fullImg.src;
+          if (!signal.aborted && currentLoadingPhotoId === loadingPhotoId && targetPhoto.id === photo.id) {
+            imageElement.src = fullImg.src;
+            currentImageSrc = fullImg.src;
+          }
         }
       }
       
-      console.log(`✓ Upgraded to full resolution`);
+      console.log(`✓ Upgraded to full resolution for ${loadingPhotoId}`);
       
     } catch (error) {
+      if (error.message === 'Aborted') {
+        console.log(`Loading aborted for ${loadingPhotoId}`);
+        return;
+      }
+      
       console.error('Error loading image:', error);
       
-      // Fallback to original
-      if (imageElement) {
+      // Only fallback if we're still loading the same photo and not aborted
+      if (!signal.aborted && currentLoadingPhotoId === loadingPhotoId && targetPhoto.id === photo.id && imageElement) {
         imageElement.src = targetPhoto.src;
         currentImageSrc = targetPhoto.src;
       }
