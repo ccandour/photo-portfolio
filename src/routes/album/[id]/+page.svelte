@@ -494,10 +494,6 @@
     gap: 0.5rem;
   }
 
-  .hide-mobile{
-    display: inline;
-  }
-
   @media (max-width: 420px) {
     .hide-mobile {
       display: none;
