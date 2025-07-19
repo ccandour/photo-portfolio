@@ -115,9 +115,9 @@
   })();
 
 
-  // Updated filter options
+  // Filter options
   $: filters = [
-    { id: 'all', label: 'All<span class="hide-mobile"> Photos</span>', count: data.album?.photos?.length || 0 },
+    { id: 'all', label: 'All<span class="filter-hide-mobile"> Photos</span>', count: data.album?.photos?.length || 0 },
     { id: 'monochrome', label: 'Monochrome', count: monochromeCount },
     { id: 'color', label: 'Color', count: colorCount }
   ];
@@ -495,7 +495,14 @@
   }
 
   @media (max-width: 420px) {
-    .hide-mobile {
+  .hide-mobile {
+    display: none;
+  }
+}
+
+  /* For the filter button - hides at 600px */
+  @media (max-width: 600px) {
+    .filter-hide-mobile {
       display: none;
     }
   }
