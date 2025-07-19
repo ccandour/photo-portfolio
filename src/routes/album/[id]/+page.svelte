@@ -117,7 +117,7 @@
 
   // Updated filter options
   $: filters = [
-    { id: 'all', label: 'All Photos', count: data.album?.photos?.length || 0 },
+    { id: 'all', label: 'All<span class="hide-mobile"> Photos</span>', count: data.album?.photos?.length || 0 },
     { id: 'monochrome', label: 'Monochrome', count: monochromeCount },
     { id: 'color', label: 'Color', count: colorCount }
   ];
@@ -185,7 +185,9 @@
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none">
               <path d="M15 18l-6-6 6-6"/>
             </svg>
-            Back to Home
+            <span>
+            Back <span class="hide-mobile">to Home</span>
+            </span>
           </button>
           </div>
       </div>
@@ -223,7 +225,9 @@
             class:active={selectedFilter === filter.id}
             on:click={() => selectedFilter = filter.id}
           >
-            {filter.label}
+            <span>
+              {@html filter.label}
+            </span>
             <span class="filter-count">({filter.count})</span>
           </button>
         {/each}
@@ -488,6 +492,16 @@
   .filters {
     display: flex;
     gap: 0.5rem;
+  }
+
+  .hide-mobile{
+    display: inline;
+  }
+
+  @media (max-width: 420px) {
+    .hide-mobile {
+      display: none;
+    }
   }
 
   .filter-btn {
