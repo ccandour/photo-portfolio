@@ -69,7 +69,7 @@
 
   // Calculate most used ISO
   $: isos = data.album.photos.map(photo => photo.metadata?.iso.replace('ISO', '').trim() || '100');
-  $: topISO = isos.sort((a, b) => isos.filter(v => v === a).length - isos.filter(v => v === b).length)[0] || '100';
+  $: averageISO = Math.round(isos.reduce((sum, iso) => sum + Number(iso), 0) / isos.length/50)*50 || 100;
 
   // Calculate most used shutter speed
   $: shutterSpeeds = data.album.photos.map(photo => {
@@ -77,7 +77,7 @@
     const match = speed.match(/(\d+)\/(\d+)/);
     return match ? (Number(match[2])) : 1000; // Default to 1000 if no match
   });
-  $: topShutterSpeed = '1/' + shutterSpeeds.sort((a, b) => shutterSpeeds.filter(v => v === a).length - shutterSpeeds.filter(v => v === b).length)[0] || '1/125';
+  $: averageShutterSpeed = Math.round(shutterSpeeds.reduce((sum, speed) => sum + speed, 0) / shutterSpeeds.length/50)*50 || 1000;
 
   // Find most used camera and lens
   $: cameraStats = (() => {
@@ -124,8 +124,8 @@
       mostUsedCamera,
       mostUsedLens,
       totalShots,
-      topISO: topISO,
-      topShutterSpeed: topShutterSpeed
+      averageISO: averageISO,
+      averageShutterSpeed: averageShutterSpeed
     };
   })();
 
@@ -223,12 +223,12 @@
               <div class="stat-value">{cameraStats.mostUsedLens}</div>
             </div>
             <div class="stat-item">
-              <div class="stat-label">Top ISO</div>
-              <div class="stat-value">{cameraStats.topISO}</div>
+              <div class="stat-label">Average ISO</div>
+              <div class="stat-value">{cameraStats.averageISO}</div>
             </div>
             <div class="stat-item">
-              <div class="stat-label">Top Shutter Speed</div>
-              <div class="stat-value">{cameraStats.topShutterSpeed}</div>
+              <div class="stat-label">Average Shutter Speed</div>
+              <div class="stat-value">1/{cameraStats.averageShutterSpeed}</div>
             </div>
           </div>
         {/if}
