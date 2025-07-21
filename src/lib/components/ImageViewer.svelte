@@ -612,7 +612,7 @@
             </div>
             <div class="meta-item">
               <span class="label">ISO:</span>
-              <span class="value">{photo.metadata.iso}</span>
+              <span class="value">{photo.metadata.iso.replace('ISO', '')}</span>
             </div>
             <div class="meta-item">
               <span class="label">SS:</span>
@@ -747,10 +747,7 @@
   /* Mobile adjustments */
   @media (max-width: 768px) {
     .main-image {
-      max-width: 100vw;
-      max-height: calc(100vh - 140px);
       width: 100vw;
-      height: calc(100vh - 140px);
     }
   }
 

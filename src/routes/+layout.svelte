@@ -130,7 +130,7 @@
     display: flex;
     justify-content: center;
     gap: 2rem;
-    padding: 1.5rem;
+    padding: 1rem;
     background: rgba(26, 26, 26, 0.4);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -146,6 +146,7 @@
     transition: all 0.2s ease;
     padding: 0.5rem 1rem;
     border-radius: 4px;
+    border: 1px solid transparent;
   }
 
   :global(nav a:hover) {
@@ -156,6 +157,7 @@
   :global(nav a.active) {
     opacity: 1;
     background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   @media (max-width: 480px) {
