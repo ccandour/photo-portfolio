@@ -386,8 +386,22 @@
   }
 
   main {
-    margin-top: 5rem;
-    padding: 2rem 0;
+    margin-top: 6rem;
+    padding: 1.5rem 0;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
   }
 
   .album-header {
@@ -408,17 +422,6 @@
 
   .album-info {
     width: 100%;  
-  }
-
-  .album-info h1 {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
   .date-badge {

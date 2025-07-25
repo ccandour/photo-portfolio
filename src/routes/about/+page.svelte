@@ -97,18 +97,26 @@
   }
 
   main {
-    margin-top: 4rem;
-    max-width: 600px;
+    margin-top: 6rem;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
-    padding: 2rem 0;
+    padding: 1.5rem 0;
   }
 
   h1 {
-    font-size: 2.5rem;
-    font-weight: 400;
-    margin-bottom: 1rem;
-    color: #fff;
+    font-size: 2rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-block-start: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
   }
 
   .intro {

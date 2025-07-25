@@ -28,10 +28,8 @@
   }
 
   main {
-    margin-top: 8rem; 
-    padding: 0;
-    position: relative;
-    z-index: 1;
+    margin-top: 6rem;
+    padding: 1.5rem 0;
   }
 
   h1 {
