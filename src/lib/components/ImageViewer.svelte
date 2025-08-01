@@ -31,9 +31,9 @@
   $: nextPhoto = currentIndex < photos.length - 1 ? photos[currentIndex + 1] : null;
 
   const downloadSizes = [
-    { label: 'Small (1024px)', width: 1024 },
-    { label: 'Medium (2048px)', width: 2048 },
-    { label: 'Large (3072px)', width: 3072 },
+    { label: 'S (1024px)', width: 1024 },
+    { label: 'M (2048px)', width: 2048 },
+    { label: 'L (3072px)', width: 3072 },
     { label: 'Original', width: null }
   ];
 
@@ -651,7 +651,7 @@
                   role="menuitem"
                   on:click={() => downloadImage(size.width)}
                 >
-                  {size.label}
+                  {@html size.label.replace(/^(S|M|L)/, '<b style="font-size: medium">$1</b>')}
                 </button>
               {/each}
             </div>
