@@ -95,6 +95,13 @@ export interface DeezerSearchResponse {
   next?: string;
 }
 
+export interface TrackRecommendation {
+  searchQuery: string;
+  description: string;
+  mood: string;
+  track?: DeezerTrack;
+}
+
 declare global {
   interface Window {
     onSpotifyWebPlaybackSDKReady: () => void;
