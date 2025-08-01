@@ -82,5 +82,7 @@
     width: 24px;
     height: 24px;
     display: block;
+    color: inherit;
+    fill: currentColor;
   }
 </style> 
