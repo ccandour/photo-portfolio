@@ -80,9 +80,31 @@ h1 {
   border: none;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.2s ease;
+  position: relative;
+  margin-bottom: -2px;
+}
+
+.stats-toggle::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0.5em;
+  right: 0.5em;
+  height: 1px;
+  display:invisible;
+}
+
+.stats-toggle::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0.5em;
+  right: 0.5em;
+  height: 1px;
+  background-color: currentColor;
 }
 
 .stats-toggle:hover {
