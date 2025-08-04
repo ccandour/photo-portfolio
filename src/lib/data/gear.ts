@@ -4,60 +4,60 @@ export const gear: GearItem[] = [
   {
     type: 'camera',
     name: 'Fujifilm X-S10',
-    description: 'My main camera body, portable yet powerful. The IBIS and compact size make it ideal for street photography.',
+    description: 'My main camera. Small enough to carry around all day but still packs a punch. The stabilization is a lifesaver for handheld shots.',
     specs: [
       '26.1MP X-Trans CMOS 4 Sensor',
       '5-Axis In-Body Image Stabilization',
-      'Superb Build Quality',
-      'Vari-angle LCD Screen + EVF',
+      'Solid build quality',
+      'Flip-out screen + viewfinder',
     ],
     url: 'https://fujifilm-x.com/global/products/cameras/x-s10/'
   },
   {
     type: 'lens',
     name: 'Viltrox 56mm f/1.4',
-    description: 'My AF lens of choice. The 85mm equivalent focal length and wide aperture create beautiful subject separation and bokeh.',
+    description: 'My autofocus lens when I want that creamy background blur. Great for isolating subjects and getting those portrait-style street shots.',
     specs: [
-      'Fast f/1.4 Maximum Aperture',
-      'Ideal Focal Length for Narrower Street Shots',
-      'Excellent Build Quality',
-      'Decent Autofocus',
+      'Fast f/1.4 aperture',
+      '85mm equivalent (perfect for tighter framing)',
+      'Good build quality',
+      'Decent autofocus',
     ],
     url: 'https://viltrox.com/products/viltrox-af-56mm-f14-x-mount-lens'
   },
   {
     type: 'lens',
     name: 'TTArtisan 25mm f/2.0',
-    description: 'My go-to lens for street photography. The 37.5mm equivalent focal length is perfect for creating layered compositions.',
+    description: 'My favorite lens right now. Manual focus takes some getting used to, but the 37.5mm equivalent is perfect for capturing wider street scenes.',
     specs: [
-      'Compact All-Metal Construction',
-      'Manual Focus Design',
-      'Sharp Optics with Minimal Distortion',
-      'Click-Stop Aperture Ring'
+      'All-metal build (feels solid)',
+      'Manual focus only',
+      'Sharp with minimal distortion',
+      'Clicky aperture ring'
     ],
     url: 'https://www.ttartisan.com/?list_10/152.html'
   },
   {
     type: 'accessory',
     name: 'Think Tank Mirrorless Mover 20 v2',
-    description: 'My everyday camera bag. Perfectly fits my camera plus the two lenses I own.',
+    description: 'Simple camera bag that fits everything I need. Camera body plus both lenses with room for extras. Nothing fancy but gets the job done.',
     specs: [
-      'Water-Resistant Fabric',
-      'Magnetic Closure',
-      'Padded Interior Dividers',
-      'Front Organizer Pocket'
+      'Water-resistant fabric',
+      'Magnetic closure (super convenient)',
+      'Padded dividers',
+      'Looks good :)'
     ],
     url: 'https://www.thinktankphoto.com/products/mirrorless-mover-20-v2'
   },
   {
     type: 'accessory',
     name: 'Lightroom + Dehancer Plugin',
-    description: 'My post-processing workflow combines Lightroom\'s powerful calibration and RAW processing with Dehancer\'s film-like color grading.',
+    description: 'How I edit my photos. Lightroom for the basics and Dehancer when I want that film look. Simple workflow that just works.',
     specs: [
-      'Great RAF Demosaicing',
-      'Advanced Color Grading',
-      'Film Stock Emulation',
-      'Fast and Efficient Workflow',
+      'Great for Fuji RAF files',
+      'Solid color grading tools',
+      'Film emulation presets',
+      'Allows for fine-tuning',
     ],
     url: 'https://www.adobe.com/products/photoshop-lightroom.html'
   }

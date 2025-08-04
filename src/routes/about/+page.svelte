@@ -88,7 +88,7 @@
     { name: 'Magic: The Gathering', icon: '🃏' },
     { name: 'Music', icon: '🎵' },
     { name: 'Badminton', icon: '🏸' },
-    { name: 'Travel', icon: '✈️' }
+    { name: 'Guitar', icon: '🎸' }
   ];
 </script>
 
@@ -99,31 +99,31 @@
 <div class="wrapper">
   <main>
     <div class="hero-section">
-      <h1>About Me</h1>
+      <h1>hey there 👋</h1>
       <p class="intro">
-        Hi! I'm Piotr, an 18-year-old street photographer from Poland. 
-        I capture life through the lens, seeking beauty in everyday moments. If you're curious where to find me, you can check out my profiles below :)
+        I'm Piotr, 18, from Poland. I love taking photos of random things happening on the streets. 
+        Also into coding and other random things. Here's where you can find me online if you want to check out what I'm up to.
       </p>
     </div>
 
     <div class="content-grid">
       <!-- About Section -->
       <section class="about-section">
-        <h2>What I Do</h2>
+        <h2>what i'm into</h2>
         <div class="about-content">
           <p>
-            Street photography is by far my favorite style of photography — I love documenting authentic moments 
-            happening in the streets and capturing the essence of everyday life in the city. I mostly shoot on holidays because I find it easier to focus on photography then, but I also try to carry my camera with me as much as possible.
+            Street photography is pretty much my thing — I just walk around and take pictures of whatever catches my eye. 
+            People doing their daily stuff, cool shadows, weird moments. I'm usually more active with my camera when I'm traveling somewhere new, 
+            but I try to bring it with me around town too.
           </p>
           <p>
-            Beyond photography, I'm deeply into programming and do study Computer Science. 
-            This portfolio itself is a reflection of that intersection between creative and 
-            technical pursuits.
+            I also code a bunch (studying CS) and built this whole site myself (with copilot). 
+            It's kinda cool how photography and programming both involve seeing things differently and creating something out of it.
           </p>
         </div>
         
         <div class="interests">
-          <h3>Current Interests</h3>
+          <h3>what i'm into rn</h3>
           <div class="interests-grid">
             {#each interests as interest}
               <div class="interest-item">
@@ -137,10 +137,10 @@
 
       <!-- Links Section -->
       <section class="links-section">
-        <h2>Find Me Online</h2>
+        <h2>find me online</h2>
         
         <div class="links-category">
-          <h3>Main Profiles</h3>
+          <h3>main profiles</h3>
           <div class="links-grid primary">
             {#each primaryLinks as link}
               <a href={link.url} target="_blank" rel="noopener noreferrer" class="link-card primary">
@@ -159,7 +159,7 @@
         </div>
 
         <div class="links-category">
-          <h3>Media & Reviews</h3>
+          <h3>movies, books etc</h3>
           <div class="links-grid">
             {#each secondaryLinks as link}
               <a href={link.url} target="_blank" rel="noopener noreferrer" class="link-card">
@@ -178,7 +178,7 @@
         </div>
 
         <details class="other-links">
-          <summary>Other Platforms</summary>
+          <summary>FOR THE CURIOUS</summary>
           <div class="links-grid compact">
             {#each otherLinks as link}
               <a href={link.url} target="_blank" rel="noopener noreferrer" class="link-card compact">
@@ -199,7 +199,7 @@
     </div>
 
     <footer class="page-footer">
-      <p>Based in Gdansk, Poland • Crafted with love</p>
+      <p>chilling in gdansk, poland • made with ☕ and way too much overthinking</p>
     </footer>
   </main>
 </div>

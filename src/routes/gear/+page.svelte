@@ -10,15 +10,15 @@
 </script>
 
 <svelte:head>
-  <title>My Photography Gear</title>
-  <meta name="description" content="Explore the photography gear I use for my street photography, including cameras, lenses, and accessories." />
+  <title>Photography Gear</title>
+  <meta name="description" content="The cameras, lenses, and gear I use for street photography." />
   <link rel="stylesheet" href="/css/gear.css">
 </svelte:head>
 
 <div class="wrapper">
   <main>
-    <h1>My Photography Gear</h1>
-    <p class="intro">Here's the equipment I use to capture my street photography. Most of my images are therefore shot at 25 or 56mm, with the wider lens being by recent favorite.</p>
+    <h1>what i shoot with</h1>
+    <p class="intro">Here's the gear I actually use for street photography. Most of my shots are taken at 25mm or 56mm — the 25mm has become my go-to lately for that wider perspective and 'cause i like my 25 lens better.</p>
 
     {#each Object.entries(categories) as [type, title]}
       <section>

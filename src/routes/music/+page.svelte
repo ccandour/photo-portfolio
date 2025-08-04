@@ -70,8 +70,8 @@
 
 <div class="wrapper">
   <main>
-    <h1>Music Picks</h1>
-    <p class="intro">Some peak music, check it out.</p>
+    <h1>what i listen to</h1>
+    <p class="intro">Some of my absolute favories, check them out (whole albums ofc)</p>
 
     <div class="recommendations">
       {#if loading}

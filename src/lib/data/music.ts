@@ -27,7 +27,7 @@ export const recommendations: TrackRecommendation[] = [
 		mood: 'Ambient'
 	},
   {
-		searchQuery: 'Pia Fraus How Fast Can You Love',
+		searchQuery: 'Pia Fraus How Fast Can You Love in solarium',
 		description: 'wish i was estonian tbh.',
 		mood: 'Upbeat'
 	},
@@ -42,7 +42,7 @@ export const recommendations: TrackRecommendation[] = [
 		mood: 'Nostalgic'
 	},
 	{
-		searchQuery: 'Asobi Seksu Goodbye',
+		searchQuery: 'Asobi Seksu mizu asobi',
 		description: 'holy instrumental.',
 		mood: 'Poppy'
 	},
