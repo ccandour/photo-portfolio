@@ -1,6 +1,11 @@
 import type { TrackRecommendation } from "$lib/types";
 
 export const recommendations: TrackRecommendation[] = [
+    {
+		searchQuery: 'Candy Claws Pangea Girls',
+		description: 'silky vocals over the most energetic baseline ever.',
+		mood: 'Funky'
+	},
   {
 		searchQuery: 'Slowdive catch the breeze',
 		description: 'so calm yet powerful.',
