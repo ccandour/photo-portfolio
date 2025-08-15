@@ -123,7 +123,6 @@
         </div>
         
         <div class="interests">
-          <h3>what i'm into rn</h3>
           <div class="interests-grid">
             {#each interests as interest}
               <div class="interest-item">
@@ -137,8 +136,6 @@
 
       <!-- Links Section -->
       <section class="links-section">
-        <h2>find me online</h2>
-        
         <div class="links-category">
           <h3>main profiles</h3>
           <div class="links-grid primary">
@@ -197,9 +194,5 @@
         </details>
       </section>
     </div>
-
-    <footer class="page-footer">
-      <p>chilling in gdansk, poland • made with ☕ and way too much overthinking</p>
-    </footer>
   </main>
 </div>

@@ -31,6 +31,7 @@ h1 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
+  font-family: 'Georgia', serif;
 }
 
 .intro {
@@ -66,6 +67,7 @@ h1 {
   color: rgba(255, 255, 255, 0.9);
   margin: 0 0 1.5rem 0;
   letter-spacing: -0.01em;
+  font-family: 'Georgia', serif;
 }
 
 .about-content p {
@@ -108,13 +110,17 @@ h1 {
   border-radius: 8px;
   font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.8);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   min-height: 56px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .interest-item:hover {
   background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
 }
 
 .interest-icon {
@@ -132,6 +138,7 @@ h1 {
   color: rgba(255, 255, 255, 0.9);
   margin: 0 0 2rem 0;
   letter-spacing: -0.01em;
+  font-family: 'Georgia', serif;
 }
 
 .links-category {
@@ -198,14 +205,15 @@ h1 {
 }
 
 .link-card:hover {
-  transform: translateY(-2px);
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 .link-card.primary:hover {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .link-content {
@@ -277,7 +285,7 @@ h1 {
 }
 
 .other-links summary {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
@@ -285,11 +293,16 @@ h1 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   list-style: none;
   position: relative;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  margin: 0 -0.8rem;
+  padding-left: 0.8rem;
 }
 
 .other-links summary:hover {
   color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 .other-links summary::-webkit-details-marker {
@@ -300,6 +313,7 @@ h1 {
   content: '+';
   position: absolute;
   right: 0;
+  margin-right: 0.8rem;;
   font-size: 1.2rem;
   font-weight: 300;
   transition: transform 0.2s ease;

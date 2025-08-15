@@ -7,10 +7,15 @@
 
 <div class="wrapper">
   <main>
-    <h1>
-      Photography is the simplest thing in the world, but it is incredibly complicated to make it really work.
-    </h1>
-    <p class="attribution">— <a href="https://www.martinparr.com/" target="_blank" rel="noopener noreferrer">Martin Parr</a></p>
+    <div class="hero-quote">
+      <h1>
+        "Photography is the <em>simplest</em> thing in the world, 
+        but it is <em>incredibly complicated</em> to make it really work."
+      </h1>
+      <div class="attribution">
+        <a href="https://www.martinparr.com/" target="_blank" rel="noopener noreferrer">— Martin Parr</a>
+      </div>
+    </div>
     {#each data.albums as album}
       <AlbumRow {album} />
     {/each}
@@ -32,34 +37,63 @@
     padding: 1.5rem 0;
   }
 
-  h1 {
-    font-size: 1.6rem;
-    font-weight: 400;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 2rem;
-    line-height: 1.2;
-    max-width: 800px;
+  .hero-quote {
+    position: relative;
+    max-width: 900px;
     margin: 0 auto;
+    padding: 1rem 2rem 4rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 300;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.4;
+    margin: 0;
+    position: relative;
+    font-family: 'Georgia', serif;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: rgb(255, 255, 255);
+    font-weight: 400;
+  }
+
+  h1 strong {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
   }
 
   .attribution {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.4);
-    margin-top: 0.5rem;
-    text-align: right;
-    padding-right: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 1rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
   }
 
   .attribution a {
-    color: rgba(255, 255, 255, 0.4);
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+    font-style: italic;
+    letter-spacing: 0.5px;
+    backdrop-filter: blur(10px);
   }
 
   .attribution a:hover {
     color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
   }
 
   @media (max-width: 768px) {
@@ -71,17 +105,22 @@
       margin-top: 7rem;
     }
 
+    .hero-quote {
+      padding: 1rem 1rem 4rem;
+    }
+
     h1 {
-      font-size: 1.3rem;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      text-align: left;
+      font-size: 1.5rem;
+      line-height: 1.3;
     }
 
     .attribution {
-      text-align: right;
-      padding-right: 1.5rem;
-      margin-top: 0;
+      margin-top: 0.75rem;
+    }
+
+    .attribution a {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.8rem;
     }
   }
 
@@ -94,20 +133,27 @@
       margin-top: 6rem;
     }
 
+    .hero-quote {
+      padding: 1rem 0.5rem 3rem
+    }
+
+    .hero-quote::before {
+      width: 40px;
+    }
+
     h1 {
-      font-size: 1.1rem;
-      padding: 1rem;
-      line-height: 1.4; 
-      text-align: left; 
-      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+      line-height: 1.4;
     }
 
     .attribution {
-      text-align: right;
-      padding-right: 1rem;
-      font-size: 0.8rem;
-      margin-top: 0.25rem;
-      margin-bottom: 2.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .attribution a {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.7rem;
     }
   }
 </style>

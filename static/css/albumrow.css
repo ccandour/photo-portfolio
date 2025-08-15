@@ -6,9 +6,18 @@
   cursor: pointer;
   text-decoration: none;
   display: flex;
-  align-items: end;
+  align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  transition: all 0.3s ease;
+  padding: 0.8rem;
+  margin: -0.8rem -0.8rem 0.8rem -0.8rem;
+  border-radius: 8px;
+}
+
+.title-section:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 .title-section h2 {
@@ -20,11 +29,11 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  font-family: 'Georgia', serif;
 }
 
 .date-badge {
   padding: 0.2rem 0.6rem;
-  margin-top: 4px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
@@ -32,7 +41,21 @@
   color: rgba(255, 255, 255, 0.8);
   font-family: 'Space Mono', monospace;
   align-self: center; /* Keep the date badge aligned with title baseline */
-  margin-top: 0.3rem; /* Fine-tune position */
+  transition: all 0.3s ease;
+}
+
+.title-section:hover h2 {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.9));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title-section:hover .date-badge {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 
 .photos-container {
@@ -54,6 +77,14 @@
   cursor: pointer;
   background: rgba(255, 255, 255, 0.05);
   position: relative;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.photo-item:hover {
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .photo-item img {
@@ -134,12 +165,14 @@
   justify-content: center;
   color: white;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 .action-btn:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
 .action-btn svg {

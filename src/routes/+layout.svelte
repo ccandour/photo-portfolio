@@ -143,7 +143,7 @@
     text-decoration: none;
     font-size: 1rem;
     opacity: 0.7;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     border: 1px solid transparent;
@@ -151,13 +151,16 @@
 
   :global(nav a:hover) {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
   }
 
   :global(nav a.active) {
     opacity: 1;
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
   }
 
   @media (max-width: 480px) {

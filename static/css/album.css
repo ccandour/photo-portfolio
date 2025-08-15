@@ -23,6 +23,7 @@ h1 {
   display: block;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
+  font-family: 'Georgia', serif;
 }
 
 .album-header {
@@ -82,9 +83,17 @@ h1 {
   cursor: pointer;
   text-decoration: none;
   font-size: 0.9rem;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
   margin-bottom: -2px;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+}
+
+.stats-toggle:hover {
+  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 .stats-toggle::before {
@@ -109,6 +118,8 @@ h1 {
 
 .stats-toggle:hover {
   color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateY(-1px);
 }
 
 .stats-panel {
@@ -170,16 +181,25 @@ h1 {
   border-radius: 6px;
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   font-size: 0.8rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
+.filter-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
 .filter-btn.active {
   background: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .filter-count {
@@ -200,15 +220,24 @@ h1 {
   border-radius: 6px;
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.view-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
 .view-btn.active {
   background: rgba(255, 255, 255, 0.2);
   color: rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .view-btn svg {
@@ -291,8 +320,9 @@ h1 {
 }
 
 .photo-item:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
 }
 
 .photo-item:hover img {
@@ -368,12 +398,14 @@ h1 {
   justify-content: center;
   color: white;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
 }
 
 .action-btn:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
 .action-btn svg {
@@ -484,14 +516,17 @@ h1 {
   border-radius: 8px; /* Add border radius */
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   font-size: 0.9rem;
   text-decoration: none;
 }
 
 .back-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
   color: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
 }
 
 .back-button svg {
