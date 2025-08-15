@@ -90,7 +90,7 @@
         // Handle abort signal
         if (signal) {
           signal.addEventListener('abort', () => {
-            img.src = ''; // Stop loading
+            // Don't set img.src = '' as it can interfere with loading
             this.loadingPromises.delete(src);
             reject(new Error('Aborted'));
           });
@@ -120,6 +120,11 @@
 
     isLoaded(src: string): boolean {
       return this.cache.has(src);
+    }
+
+    // Clear failed loading attempt so it can be retried
+    clearFailedLoad(src: string): void {
+      this.loadingPromises.delete(src);
     }
 
     // Preload at low priority (won't block main image)
@@ -154,6 +159,10 @@
     
     const initialSize = getInitialSize();
     const responsiveUrl = getResponsiveUrl(targetPhoto.src, initialSize);
+    
+    // Clear any failed loading attempts for this image so we can retry
+    imageLoader.clearFailedLoad(responsiveUrl);
+    imageLoader.clearFailedLoad(targetPhoto.src);
     
     try {
       // Check if aborted before starting
@@ -196,6 +205,10 @@
       // If screen is smaller than 1200px, skip full resolution
       if (initialSize < 1200) {
         console.log(`Skipping full resolution for small screen: ${initialSize}px`);
+        // Clear the abort controller since loading completed successfully
+        if (currentAbortController === abortController) {
+          currentAbortController = null;
+        }
         return;
       }
       console.log(`Upgrading to full resolution: ${targetPhoto.src}`);
@@ -249,13 +262,27 @@
       
       console.log(`✓ Upgraded to full resolution for ${loadingPhotoId}`);
       
+      // Clear the abort controller since loading completed successfully
+      if (currentAbortController === abortController) {
+        currentAbortController = null;
+      }
+      
     } catch (error) {
       if (error instanceof Error && error.message === 'Aborted') {
         console.log(`Loading aborted for ${loadingPhotoId}`);
+        // Clear abort controller if this was the current one
+        if (currentAbortController === abortController) {
+          currentAbortController = null;
+        }
         return;
       }
       
       console.error('Error loading image:', error);
+      
+      // Clear abort controller if this was the current one
+      if (currentAbortController === abortController) {
+        currentAbortController = null;
+      }
       
       // Only fallback if we're still loading the same photo and not aborted
       if (!signal.aborted && currentLoadingPhotoId === loadingPhotoId && targetPhoto.id === photo.id && imageElement) {
