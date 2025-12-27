@@ -12,9 +12,9 @@ export const recommendations: TrackRecommendation[] = [
 		mood: 'Blissful'
 	},
   {
-		searchQuery: 'Candy Claws Pangea Girls',
-		description: 'silky vocals over the most energetic baseline ever.',
-		mood: 'Funky'
+		searchQuery: 'The Nightblooms Slowly Rising',
+		description: 'raw emotion poured into omni-present sound.',
+		mood: 'Powerful'
 	},
   {
 		searchQuery: 'Candy Claws Pangea Girls',
