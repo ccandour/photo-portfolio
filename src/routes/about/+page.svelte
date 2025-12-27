@@ -101,7 +101,7 @@
     <div class="hero-section">
       <h1>hey there 👋</h1>
       <p class="intro">
-        I'm Piotr, 18, from Poland. I love taking photos of random things happening on the streets. 
+        I'm Piotr, 19, from Poland. I love taking photos of random things happening on the streets. 
         Also into coding and other random things. Here's where you can find me online if you want to check out what I'm up to.
       </p>
     </div>

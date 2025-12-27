@@ -1,7 +1,22 @@
 import type { TrackRecommendation } from "$lib/types";
 
 export const recommendations: TrackRecommendation[] = [
-    {
+  {
+		searchQuery: 'The Cure Pictures of You',
+		description: 'a masterpiece of an album.',
+		mood: 'Nostalgic'
+	},
+  {
+		searchQuery: 'Secret Shine Into the Ether',
+		description: 'niche gem of bliss.',
+		mood: 'Blissful'
+	},
+  {
+		searchQuery: 'Candy Claws Pangea Girls',
+		description: 'silky vocals over the most energetic baseline ever.',
+		mood: 'Funky'
+	},
+  {
 		searchQuery: 'Candy Claws Pangea Girls',
 		description: 'silky vocals over the most energetic baseline ever.',
 		mood: 'Funky'
