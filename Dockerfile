@@ -24,6 +24,7 @@ COPY --from=build /app/static ./static
 
 # Ensure the photos directory exists
 RUN mkdir -p ./static/photos
+RUN mkdir -p ./data
 
 # Install only production dependencies
 RUN npm install --omit=dev

@@ -1,0 +1,62 @@
+[
+  {
+    "type": "camera",
+    "name": "Fujifilm X-S10",
+    "description": "My main camera. Small enough to carry around all day but still packs a punch. The stabilization is a lifesaver for handheld shots.",
+    "specs": [
+      "26.1MP X-Trans CMOS 4 Sensor",
+      "5-Axis In-Body Image Stabilization",
+      "Solid build quality",
+      "Flip-out screen + viewfinder"
+    ],
+    "url": "https://fujifilm-x.com/global/products/cameras/x-s10/"
+  },
+  {
+    "type": "lens",
+    "name": "Viltrox 56mm f/1.4",
+    "description": "My autofocus lens when I want that creamy background blur. Great for isolating subjects and getting those portrait-style street shots.",
+    "specs": [
+      "Fast f/1.4 aperture",
+      "85mm equivalent (perfect for tighter framing)",
+      "Good build quality",
+      "Decent autofocus"
+    ],
+    "url": "https://viltrox.com/products/viltrox-af-56mm-f14-x-mount-lens"
+  },
+  {
+    "type": "lens",
+    "name": "TTArtisan 25mm f/2.0",
+    "description": "My favorite lens right now. Manual focus takes some getting used to, but the 37.5mm equivalent is perfect for capturing wider street scenes.",
+    "specs": [
+      "All-metal build (feels solid)",
+      "Manual focus only",
+      "Sharp with minimal distortion",
+      "Clicky aperture ring"
+    ],
+    "url": "https://www.ttartisan.com/?list_10/152.html"
+  },
+  {
+    "type": "accessory",
+    "name": "Think Tank Mirrorless Mover 20 v2",
+    "description": "Simple camera bag that fits everything I need. Camera body plus both lenses with room for extras. Nothing fancy but gets the job done.",
+    "specs": [
+      "Water-resistant fabric",
+      "Magnetic closure (super convenient)",
+      "Padded dividers",
+      "Looks good :)"
+    ],
+    "url": "https://www.thinktankphoto.com/products/mirrorless-mover-20-v2"
+  },
+  {
+    "type": "accessory",
+    "name": "Lightroom + Dehancer Plugin",
+    "description": "How I edit my photos. Lightroom for the basics and Dehancer when I want that film look. Simple workflow that just works.",
+    "specs": [
+      "Great for Fuji RAF files",
+      "Solid color grading tools",
+      "Film emulation presets",
+      "Allows for fine-tuning"
+    ],
+    "url": "https://www.adobe.com/products/photoshop-lightroom.html"
+  }
+]

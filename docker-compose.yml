@@ -7,6 +7,9 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+    environment:
+      - DATA_DIR=/app/data
     volumes:
       - ./static/photos:/app/static/photos
       - ./static/responsive:/app/static/responsive
+      - ./data:/app/data
