@@ -2,6 +2,21 @@ import type { TrackRecommendation } from "$lib/types";
 
 export const recommendations: TrackRecommendation[] = [
   {
+		searchQuery: 'Donna Summer MacArthur Park Suite: MacArthur Park/One Of A Kind/Heavens Knows/MacArthur Park Reprise (DJ Promo 12" Version)',
+		description: 'thats what im ******* talking about!',
+		mood: 'Groovy'
+	},
+  {
+		searchQuery: 'Yo La Tengo You Can Have It All',
+		description: 'this whole album is so chill',
+		mood: 'Relaxing'
+	},
+  {
+		searchQuery: 'Beach House Space Song',
+		description: 'moving through space and time.',
+		mood: 'Ethereal'
+	},
+  {
 		searchQuery: 'The Cure Pictures of You',
 		description: 'a masterpiece of an album.',
 		mood: 'Nostalgic'
