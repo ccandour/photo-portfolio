@@ -9,6 +9,11 @@ services:
     restart: unless-stopped
     environment:
       - DATA_DIR=/app/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - ./static/photos:/app/static/photos
       - ./static/responsive:/app/static/responsive
