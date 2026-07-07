@@ -12,6 +12,18 @@
     "url": "https://fujifilm-x.com/global/products/cameras/x-s10/"
   },
   {
+    "type": "camera",
+    "name": "Fujifilm FinePix F900EXR",
+    "description": "My pocketable backup camera for when I want maximum reach without carrying a heavy setup. A fun, retro compact superzoom that still handles RAW files beautifully.",
+    "specs": [
+      "16MP 1/2\" EXR CMOS II Sensor",
+      "Fujinon 20x Optical Zoom (25-500mm equivalent)",
+      "Intelligent Hybrid AF system",
+      "Ultra-compact pocketable design"
+    ],
+    "url": "https://fujifilm-x.com/global/products/cameras/finepix-f900exr/"
+  },
+  {
     "type": "lens",
     "name": "Viltrox 56mm f/1.4",
     "description": "My autofocus lens when I want that creamy background blur. Great for isolating subjects and getting those portrait-style street shots.",
