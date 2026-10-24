@@ -120,13 +120,13 @@ export function setOrder(albumId: string, order: unknown): Promise<void> {
     });
 }
 
-export function addPhoto(albumId: string, file: File, { overwrite = false } = {}): Promise<string> {
+export function addPhoto(albumId: string, file: { name: string; buffer: Buffer }, { overwrite = false } = {}): Promise<string> {
     return withLock(albumId, async () => {
+        const { buffer } = file;
         if (!(await getAlbum(albumId))) throw new AlbumError('Album not found');
-        if (file.size === 0) throw new AlbumError('Empty file');
-        if (file.size > MAX_UPLOAD_BYTES) throw new AlbumError(`File too large (max ${MAX_UPLOAD_BYTES / 1024 / 1024} MB)`);
+        if (buffer.length === 0) throw new AlbumError('Empty file');
+        if (buffer.length > MAX_UPLOAD_BYTES) throw new AlbumError(`File too large (max ${MAX_UPLOAD_BYTES / 1024 / 1024} MB)`);
 
-        const buffer = Buffer.from(await file.arrayBuffer());
         let info;
         try {
             info = await validateImage(buffer);

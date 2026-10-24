@@ -12,8 +12,6 @@ services:
       # Admin panel (values come from .env, see .env.example)
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
       - ORIGIN=${ORIGIN:?Set ORIGIN in .env to the public site URL}
-      # Max request body in bytes (adapter-node default is 512 KB; photos are uploaded one per request)
-      - BODY_SIZE_LIMIT=73400320
       # Uncomment ONLY if a reverse proxy (nginx, Caddy, Traefik...) sits in front and sets X-Forwarded-For.
       # Gives login rate limiting the real client IP; without a proxy the header could be spoofed.
       # - ADDRESS_HEADER=X-Forwarded-For

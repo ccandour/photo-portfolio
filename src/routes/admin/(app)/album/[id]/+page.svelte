@@ -52,12 +52,49 @@
   }
 
   // --- uploads ---
-  type Upload = { name: string; status: 'queued' | 'uploading' | 'done' | 'error'; message?: string };
+  // Files go up in small chunks (see $lib/server/uploads.ts) so proxy body-size limits don't matter
+  type Upload = { name: string; status: 'queued' | 'uploading' | 'processing' | 'done' | 'error'; message?: string };
   let uploads: Upload[] = [];
   let overwrite = false;
   let uploading = false;
   let dropActive = false;
   let fileInput: HTMLInputElement;
+
+  async function api(path: string, init: RequestInit) {
+    const res = await fetch(`/admin/api/album/${album.id}/uploads${path}`, init);
+    const json = await res.json().catch(() => null);
+    if (!res.ok) {
+      const hint = res.status === 413 ? ' (request too large for the server/proxy)' : '';
+      throw new Error(json?.message ?? `HTTP ${res.status}${hint}`);
+    }
+    return json;
+  }
+
+  async function uploadOne(file: File, i: number) {
+    const { uploadId, chunkSize } = await api('', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: file.name, size: file.size, overwrite })
+    });
+    try {
+      for (let offset = 0; offset < file.size; offset += chunkSize) {
+        const chunk = file.slice(offset, offset + chunkSize);
+        const send = () => api(`/${uploadId}?offset=${offset}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/octet-stream' },
+          body: chunk
+        });
+        // One retry per chunk covers a flaky connection; the server rejects duplicates by offset
+        await send().catch(send);
+        uploads[i] = { ...uploads[i], message: `${Math.round(((offset + chunk.size) / file.size) * 100)}%` };
+      }
+      uploads[i] = { ...uploads[i], status: 'processing', message: 'generating sizes…' };
+      return await api(`/${uploadId}`, { method: 'POST' });
+    } catch (e) {
+      api(`/${uploadId}`, { method: 'DELETE' }).catch(() => {});
+      throw e;
+    }
+  }
 
   async function uploadFiles(files: FileList | File[]) {
     const list = Array.from(files);
@@ -73,18 +110,12 @@
         uploads[i] = { ...uploads[i], status: 'error', message: `larger than ${data.maxUploadMb} MB` };
         continue;
       }
-      uploads[i] = { ...uploads[i], status: 'uploading' };
-      const body = new FormData();
-      body.append('file', file);
-      body.append('overwrite', String(overwrite));
+      uploads[i] = { ...uploads[i], status: 'uploading', message: '0%' };
       try {
-        const res = await fetch(`/admin/api/album/${album.id}/photos`, { method: 'POST', body });
-        const json = await res.json().catch(() => null);
-        uploads[i] = res.ok
-          ? { ...uploads[i], status: 'done', message: json?.filename !== file.name ? `saved as ${json?.filename}` : '' }
-          : { ...uploads[i], status: 'error', message: json?.message ?? `HTTP ${res.status}` };
-      } catch {
-        uploads[i] = { ...uploads[i], status: 'error', message: 'network error' };
+        const { filename } = await uploadOne(file, i);
+        uploads[i] = { ...uploads[i], status: 'done', message: filename !== file.name ? `saved as ${filename}` : '' };
+      } catch (e) {
+        uploads[i] = { ...uploads[i], status: 'error', message: e instanceof Error ? e.message : 'network error' };
       }
     }
 
@@ -105,7 +136,7 @@
     img.src = `/photos/${album.id}/${filename}`;
   }
 
-  const icons = { queued: '·', uploading: '↑', done: '✓', error: '✕' };
+  const icons = { queued: '·', uploading: '↑', processing: '⚙', done: '✓', error: '✕' };
 
   let deleteConfirm = '';
 </script>
