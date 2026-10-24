@@ -20,6 +20,26 @@ export interface AlbumMetadata {
   location: string;
   date: string;
   description: string;
+  /** Photo filenames in display order (managed by the admin panel) */
+  order?: string[];
+}
+
+export interface SocialLink {
+  name: string;
+  url: string;
+  description: string;
+  category: string;
+}
+
+export interface AboutData {
+  title: string;
+  intro: string;
+  sectionTitle: string;
+  paragraphs: string[];
+  interests: { name: string; icon: string }[];
+  primaryLinks: SocialLink[];
+  secondaryLinks: SocialLink[];
+  otherLinks: SocialLink[];
 }
 
 export interface Album {

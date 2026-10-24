@@ -1,0 +1,11 @@
+# Photos and data come from mounted volumes at runtime — never bake them into the image
+static/photos
+static/responsive
+data/.backups
+node_modules
+build
+.svelte-kit
+.git
+.env
+.env.*
+.DS_Store

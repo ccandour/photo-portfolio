@@ -3,6 +3,7 @@
   import { page } from '$app/stores';
 
   $: isPhotoViewerPage = $page.url.pathname.startsWith('/photo/');
+  $: isAdminPage = $page.url.pathname === '/admin' || $page.url.pathname.startsWith('/admin/');
   
   let noiseCanvas: HTMLCanvasElement;
   
@@ -38,7 +39,7 @@
     <canvas bind:this={noiseCanvas} class="noise"></canvas>
   </div>
   
-  {#if !isPhotoViewerPage}
+  {#if !isPhotoViewerPage && !isAdminPage}
   <nav>
     <a href="/" class={$page.url.pathname === '/' ? 'active' : ''}>Home</a>
     <a href="/gear" class={$page.url.pathname === '/gear' ? 'active' : ''}>Gear</a>

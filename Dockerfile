@@ -27,7 +27,7 @@ COPY --from=build /app/static ./static
 
 # Install production dependencies and create required directories in one layer
 RUN npm ci --omit=dev && \
-    mkdir -p ./static/photos ./data && \
+    mkdir -p ./static/photos ./static/responsive ./data && \
     chown -R node:node /app
 
 # Switch to the less privileged 'node' user for security

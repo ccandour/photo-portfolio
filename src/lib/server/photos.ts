@@ -2,9 +2,17 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Album, AlbumMetadata, Photo } from '$lib/types';
 import exifr from 'exifr';
+import { PHOTOS_DIR, SUPPORTED_EXTENSIONS } from './config';
 
-const PHOTOS_DIR = 'static/photos';
-const SUPPORTED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'];
+/** Files listed in `order` come first in that order; anything not listed (e.g. FTP uploads) follows alphabetically. */
+export function sortByOrder(files: string[], order: string[] = []): string[] {
+    const rank = new Map(order.map((name, i) => [name, i]));
+    return [...files].sort((a, b) => {
+        const ra = rank.get(a) ?? Infinity;
+        const rb = rank.get(b) ?? Infinity;
+        return ra !== rb ? ra - rb : a.localeCompare(b);
+    });
+}
 
 export async function loadAlbums(): Promise<Album[]> {
     const albums: Album[] = [];
@@ -18,7 +26,7 @@ export async function loadAlbums(): Promise<Album[]> {
     console.log(`Loading albums from: ${PHOTOS_DIR}`);
     
     const albumDirs = readdirSync(PHOTOS_DIR, { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
+        .filter(dirent => dirent.isDirectory() && !dirent.name.startsWith('.'))
         .map(dirent => dirent.name);
 
     console.log(`Found album directories: ${albumDirs.join(', ')}`);
@@ -41,10 +49,10 @@ export async function loadAlbums(): Promise<Album[]> {
 
             // Find all supported image files
             const allFiles = readdirSync(albumPath);
-            const photoFiles = allFiles.filter(file => {
+            const photoFiles = sortByOrder(allFiles.filter(file => {
                 const ext = '.' + file.split('.').pop()?.toLowerCase();
                 return SUPPORTED_EXTENSIONS.includes(ext);
-            });
+            }), metadata.order);
 
             console.log(`Album ${albumId}: found ${photoFiles.length} photos`);
 
