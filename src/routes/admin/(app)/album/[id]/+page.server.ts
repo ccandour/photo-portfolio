@@ -1,5 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import { describeFsError } from '$lib/server/storage';
 import { AlbumError, deleteAlbum, deletePhoto, getAlbum, MAX_UPLOAD_BYTES, parseMetadata, regenerateVariants, updateMetadata } from '$lib/server/albums';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -19,6 +20,11 @@ async function run(fn: () => Promise<string>) {
         return { ok: await fn() };
     } catch (e) {
         if (e instanceof AlbumError) return fail(400, { error: e.message });
+        const fsError = describeFsError(e);
+        if (fsError) {
+            console.error('Album action failed:', e);
+            return fail(500, { error: fsError });
+        }
         throw e;
     }
 }

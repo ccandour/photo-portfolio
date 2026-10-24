@@ -1,5 +1,6 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { describeFsError } from '$lib/server/storage';
 import { AlbumError, addPhoto } from '$lib/server/albums';
 
 // One file per request keeps each body small and lets the UI show per-file progress
@@ -14,6 +15,6 @@ export const POST: RequestHandler = async ({ params, request }) => {
     } catch (e) {
         if (e instanceof AlbumError) error(400, e.message);
         console.error('Upload failed:', e);
-        error(500, 'Processing failed — check server logs');
+        error(500, describeFsError(e) ?? 'Processing failed — check server logs');
     }
 };

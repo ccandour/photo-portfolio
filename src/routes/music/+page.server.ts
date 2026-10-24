@@ -1,11 +1,12 @@
 import type { TrackRecommendation } from '$lib/types';
+import { withTracks } from '$lib/server/music';
 import fs from 'fs';
 import path from 'path';
 
-export function load() {
+export async function load() {
   const dataPath = path.resolve(process.env.DATA_DIR || './data', 'music.json');
   const fileContents = fs.readFileSync(dataPath, 'utf-8');
-  const recommendations = JSON.parse(fileContents);
+  const recommendations = await withTracks(JSON.parse(fileContents));
 
   return {
     recommendations
@@ -14,4 +15,4 @@ export function load() {
 
 export type PageData = {
   recommendations: TrackRecommendation[];
-}; 
+};

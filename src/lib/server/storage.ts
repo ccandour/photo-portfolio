@@ -94,3 +94,20 @@ export async function readJson<T>(filePath: string): Promise<T> {
 export function dataFile(name: 'gear.json' | 'music.json' | 'about.json'): string {
     return path.join(DATA_DIR, name);
 }
+
+/** Readable explanation for filesystem errors the admin can fix on the host (e.g. volume ownership). */
+export function describeFsError(e: unknown): string | null {
+    const err = e as NodeJS.ErrnoException;
+    const target = err?.path ? ` (${err.path})` : '';
+    switch (err?.code) {
+        case 'EACCES':
+        case 'EPERM':
+            return `Permission denied writing to disk${target}. On the server run: sudo chown -R 1000:1000 data static/photos static/responsive`;
+        case 'EROFS':
+            return `The volume is mounted read-only${target}.`;
+        case 'ENOSPC':
+            return `Disk is full${target}.`;
+        default:
+            return null;
+    }
+}

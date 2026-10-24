@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { AlbumError, createAlbum, listAlbums, parseMetadata } from '$lib/server/albums';
-import { isValidSlug, slugify } from '$lib/server/storage';
+import { describeFsError, isValidSlug, slugify } from '$lib/server/storage';
 
 export const load: PageServerLoad = async () => {
     const albums = await listAlbums();
@@ -22,6 +22,11 @@ export const actions: Actions = {
             redirect(303, `/admin/album/${id}`);
         } catch (e) {
             if (e instanceof AlbumError) return fail(400, { error: e.message, values: form as Record<string, string> });
+            const fsError = describeFsError(e);
+            if (fsError) {
+                console.error('Creating album failed:', e);
+                return fail(500, { error: fsError, values: form as Record<string, string> });
+            }
             throw e;
         }
     }

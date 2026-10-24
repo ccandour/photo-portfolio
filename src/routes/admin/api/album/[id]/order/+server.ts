@@ -1,5 +1,6 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { describeFsError } from '$lib/server/storage';
 import { AlbumError, setOrder } from '$lib/server/albums';
 
 export const PUT: RequestHandler = async ({ params, request }) => {
@@ -14,6 +15,8 @@ export const PUT: RequestHandler = async ({ params, request }) => {
         return json({ ok: true });
     } catch (e) {
         if (e instanceof AlbumError) error(409, e.message);
+        const fsError = describeFsError(e);
+        if (fsError) error(500, fsError);
         throw e;
     }
 };
