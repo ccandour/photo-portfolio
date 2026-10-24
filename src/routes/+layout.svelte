@@ -1,6 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
+  import { page, updated } from '$app/stores';
+  import { beforeNavigate } from '$app/navigation';
+
+  // After a redeploy, do a full page load instead of client-side navigation with the old build
+  beforeNavigate(({ willUnload, to }) => {
+    if ($updated && !willUnload && to?.url) {
+      location.href = to.url.href;
+    }
+  });
 
   $: isPhotoViewerPage = $page.url.pathname.startsWith('/photo/');
   $: isAdminPage = $page.url.pathname === '/admin' || $page.url.pathname.startsWith('/admin/');

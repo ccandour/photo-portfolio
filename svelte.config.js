@@ -13,6 +13,10 @@ const config = {
 			// default options are shown
 			out: 'build'
 		}),
+		// Poll for new deployments so open tabs don't request JS chunks that no longer exist
+		version: {
+			pollInterval: 60000
+		}
 	}
 };
 export default config;
